@@ -108,6 +108,8 @@ dictInsertWord (struct dictionary* dict, char* word) {
 }
 
 void insertWordR (struct dictEdge * node, char* word) {
+  // FIX
+  // Forgot about insert in order
   if (word[0] == 0) {
     // terminating
     node->isTerminal = True;
