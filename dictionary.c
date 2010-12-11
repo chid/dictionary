@@ -46,6 +46,7 @@ void printEdge(struct dictEdge* dnode, long n) { // attempt to create a PreOrde
   }
   int i;
   //printf("%li\n",n);
+
   for (i=0;i != n;++i)
     printf("  ");
   
@@ -166,7 +167,17 @@ void insertWordR (struct dictEdge * node, char* word) {
 }
    
     else {
-      insertWordR(rover->child,&word[1]);
+      // looks like a bug here;
+      if (rover->child != NULL) {
+        insertWordR(rover->child,&word[1]);
+      }
+      else {
+        rover->child = dictEdgeNew(word[1]);
+        printf("->>%s\n",word);
+        if (word[1] == '\0') { printf("WHY ISN'T THIS WORKING");rover->isTerminal = True; }
+          insertWordR(rover->child,&word[1]);
+        
+      }
     }
   }
 
@@ -233,7 +244,20 @@ dictLookupN (struct dictEdge* node,char* word) {
  * Complexity: see constraint in the assignment specification.
  */
 struct wlnode*
-dictCompletions (struct dictionary* dict, char* word);
+dictCompletions (struct dictionary* dict, char* word) {
+  struct wlnode * re = NULL;
+
+  return re;
+}
+
+/* testing functions for the above */
+void
+printwl (struct wlnode* wl) {
+   struct wlnode * cur;
+   for (cur = wl; NULL != cur; cur =  cur->next)
+      fprintf (stdout, "%s\n", cur->word);
+}
+
 
 /* Erase all dictionary entries and release all memory allocated for the
  * dictionary.

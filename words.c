@@ -12,6 +12,7 @@ int main (int argc, char** argv)
   printDict(dict);
   printDict(dict);
   dictInsertWord(dict,"TEST");
+  dictInsertWord(dict,"TESTING");
   dictInsertWord(dict,"Done");
   dictInsertWord(dict,"TEnt");
   dictInsertWord(dict,"TE");// broken
