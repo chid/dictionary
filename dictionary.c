@@ -111,15 +111,52 @@ void insertWordR (struct dictEdge * node, char* word) {
     return;
   }
   printf("input string-> %s\n",word);
+  char first = word[0];
+  bool found = False;
   
+  struct dictEdge* rover = node;
   //stopping case, word[0] == \0
   if (word[0] != '\0') {
-    insertWordR(node,&word[1]);
+    struct dictEdge* rover = node;
+    while (rover != NULL && !found) {
+      // we search until we find a match or not
+      if (rover->thisChar == first) {
+        found = True;
+        printf("FOUND YAY");
+      } else {
+      rover = rover->sibling; }
+    }
+    if (found == False) {
+      // just add the whole word in.
+      rover = node; 
+      while (rover->sibling != NULL) {
+        rover = rover->sibling;
+      }
+     rover->sibling = dictEdgeNew(word[0]);
+     node = rover->sibling;
+
+      int i = 1;while (word[i] != 0) {
+      struct dictEdge* rover = node;
+      int j;
+      for (j=0;j<i-1;j++) {
+         assert(rover->child != NULL);
+         rover = rover->child;
+      }
+      rover->child = dictEdgeNew(word[i]);
+      printf("new child pointing to %p\n",rover->child);
+      //dict->rootword[i];
+       ++i;
+  }
+}
+   
+    else {
+      insertWordR(rover,&word[1]);
+    }
   }
 
  return;
   int i = 0;
-  struct dictEdge* rover = node;
+  //struct dictEdge* rover = node;
   while (word[i] != 0) {
     rover = node;
     while (rover->child != NULL) {
