@@ -16,6 +16,9 @@
  * and tree paths are terminated by NULL links.
  */
 
+
+
+
 struct dictEdge
 {
   char     thisChar;		/* character labelling this edge */
@@ -27,6 +30,6 @@ struct dictEdge
 struct dictionary
 {
   struct dictEdge* root;        /* The root of the dictionary */
-}
+};
 
 #endif /* ! DICTIONARY_TYPE_H */

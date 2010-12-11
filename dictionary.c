@@ -1,35 +1,38 @@
-/* COMP1927 - Dictionary interface 
- *
- * DO NOT MODIFY!
- */
-
-#ifndef DICTIONARY_H
-#define DICTIONARY_H
-
-/* Boolean values
- */
-typedef enum
-{
-  False,
-  True
-}
-bool;
-
-#include "dictionary_type.h"
-
-/* Linked list of words
- */
+#include <assert.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <dictionary.h>/*
 struct wlnode
 {
   char* word;
-  struct wlnode* next;
+  struct wlnode * next;
 };
+
+struct lnode
+{
+  char* word;
+  struct lnode* next;
+};
+
+*/
 
 /* Initialise the dictionary structure
  */
 struct dictionary*
-dictInit ();
+dictInit () {
+  // we create a new dictionary
+  // and then we return it
+  struct dictionary* ndict = malloc(sizeof(struct dictionary));
+  
+  return ndict;
+}
 
+struct dictEdge* dictEdgeNew(char thisChar) {
+  struct dictEdge *ndictEdge = malloc(sizeof(struct dictEdge));
+  assert(ndictEdge != NULL);
+  ndictEdge->thisChar = thisChar;
+  return ndictEdge;
+}
 /* Insert a single word into the dictionary 
  */
 void
@@ -42,6 +45,7 @@ dictInsertWords (struct dictionary* dict, struct wlnode* words);
 
 /* Check whether a given word is in the dictionary
  */
+
 bool
 dictLookup (struct dictionary* dict, char* word);
 
@@ -65,6 +69,5 @@ dictFree (struct dictionary* dict);
 struct dictEdge*
 dictGetRoot (struct dictionary* dict) ; 
 
-#endif /* ! DICTIONARY_H */
 
 

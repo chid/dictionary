@@ -5,7 +5,6 @@
 
 #ifndef DICTIONARY_H
 #define DICTIONARY_H
-
 /* Boolean values
  */
 typedef enum
@@ -15,15 +14,23 @@ typedef enum
 }
 bool;
 
-#include "dictionary_type.h"
-
+#include <dictionary_type.h>
 /* Linked list of words
- */
+ */	
+
 struct wlnode
 {
   char* word;
-  struct wlnode* next;
+  struct wlnode * next;
 };
+
+struct lnode
+{
+  char* word;
+  struct lnode* next;
+};
+
+
 
 /* Initialise the dictionary structure
  */
@@ -42,6 +49,7 @@ dictInsertWords (struct dictionary* dict, struct wlnode* words);
 
 /* Check whether a given word is in the dictionary
  */
+
 bool
 dictLookup (struct dictionary* dict, char* word);
 

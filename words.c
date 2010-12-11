@@ -7,6 +7,10 @@
 
 int main (int argc, char** argv)
 {
+  struct dictionary* dict = dictInit();
+  printf("%d", &dict);
+
+#if 0
   // allocate WORDMAX + 2: 1 for new-line character, 1 for NUL-terminator.
   char     word[WORDMAX + 2];
   int      len;
@@ -41,6 +45,6 @@ int main (int argc, char** argv)
   }
 
   dictFree (dict);
-
+#endif
   return EXIT_SUCCESS;
 }
