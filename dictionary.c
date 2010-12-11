@@ -115,10 +115,10 @@ dictInsertWord (struct dictionary* dict, char* word) {
 }
 
 void insertWordR (struct dictEdge * node, char* word) {
+  assert(node != NULL);
   if (word[1] == 0) {
     node->isTerminal = True;
   }
-  assert(node != NULL);
   // FIX
   // Forgot about insert in order
   if (word[0] == 0) {

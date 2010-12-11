@@ -19,14 +19,15 @@ int main (int argc, char** argv)
   printf("\n");
 printEdge(dict->root,0);
 dictFree(dict);
-
+dict = dictInit();
   struct wlnode* wl = NULL;
   wl = wlIns(wl,"OK");
-  wl = wlIns(wl,"OK1");
-  wl = wlIns(wl,"OKi2");
-  wl = wlIns(wl,"OKi3214");
-  wl = wlIns(wl,"OKi");
+  wl = wlIns(wl,"Oweariej");
+ wl = wlIns(wl,"OKfnmk");
 printwl(wl);//struct 
+  dictInsertWords(dict,wl);
+  printEdge(dict->root,0)
+;
 #if 0
   // allocate WORDMAX + 2: 1 for new-line character, 1 for NUL-terminator.
   char     word[WORDMAX + 2];
