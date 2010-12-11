@@ -28,6 +28,20 @@ printwl(wl);//struct
   dictInsertWords(dict,wl);
   printEdge(dict->root,0)
 ;
+  if (dictLookupN(dict->root,"OK") == True) {
+    printf("looks like lookup working\n");
+  }
+  else {
+    printf("BROKEN");
+  }
+  if (dictLookupN(dict->root,"OKf") == False) {
+    printf("looks like lookup working\n");
+  }
+  else {
+    printf("BROKEN");
+  }
+  printf("Looked up %s in tree returned: %d\n","OK",dictLookupN(dict->root,"OK"));
+  printf("Looked up %s in tree returned: %d\n","OKf",dictLookupN(dict->root,"OKf"));
 #if 0
   // allocate WORDMAX + 2: 1 for new-line character, 1 for NUL-terminator.
   char     word[WORDMAX + 2];

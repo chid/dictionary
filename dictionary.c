@@ -238,9 +238,34 @@ dictLookup (struct dictionary* dict, char* word) {
   return False;
 }
 
+// n for internal? new?
 bool
 dictLookupN (struct dictEdge* node,char* word) {
-  return False;
+  // terminating case.
+  //return False; 
+  // this code is good :)
+  if (word[1] == '\0') {
+    if (node->isTerminal == True) {
+      return True;
+    } else {
+      return False;
+    }
+  }
+  bool found = False;
+  char first = word[0];
+  struct dictEdge *rover = node;
+  while (rover != NULL) { 
+    if (first == rover->thisChar) {
+      return dictLookupN(rover->child,&word[1]);
+    } else {
+      rover = rover->sibling;
+    }
+  }
+  if (!found) {
+    return False;
+  } else {
+    // return dictLookupN(rover->child,&word[1]);
+  }
 }
 
 /* Extract all words in the dictionary (the order does not matter).
