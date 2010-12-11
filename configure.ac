@@ -5,6 +5,8 @@ AC_PREREQ([2.67])
 AC_INIT([dictionary], [0.1], [cpeng92@gmail.com])
 #AC_CONFIG_SRCDIR([dictionary_type.h])
 #AC_CONFIG_HEADERS([config.h])
+AC_CONFIG_SRCDIR([config.h.in])
+AC_CONFIG_HEADERS([config.h])
 
 # Checks for programs.
 AM_INIT_AUTOMAKE

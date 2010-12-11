@@ -40,87 +40,87 @@ PATH: /usr/games
 ## Core tests. ##
 ## ----------- ##
 
-configure:2096: checking for a BSD-compatible install
-configure:2164: result: /usr/bin/install -c
-configure:2175: checking whether build environment is sane
-configure:2225: result: yes
-configure:2366: checking for a thread-safe mkdir -p
-configure:2405: result: /bin/mkdir -p
-configure:2418: checking for gawk
-configure:2448: result: no
-configure:2418: checking for mawk
-configure:2434: found /usr/bin/mawk
-configure:2445: result: mawk
-configure:2456: checking whether make sets $(MAKE)
-configure:2478: result: yes
-configure:2606: checking for gcc
-configure:2622: found /usr/bin/gcc
-configure:2633: result: gcc
-configure:2862: checking for C compiler version
-configure:2871: gcc --version >&5
+configure:2100: checking for a BSD-compatible install
+configure:2168: result: /usr/bin/install -c
+configure:2179: checking whether build environment is sane
+configure:2229: result: yes
+configure:2370: checking for a thread-safe mkdir -p
+configure:2409: result: /bin/mkdir -p
+configure:2422: checking for gawk
+configure:2452: result: no
+configure:2422: checking for mawk
+configure:2438: found /usr/bin/mawk
+configure:2449: result: mawk
+configure:2460: checking whether make sets $(MAKE)
+configure:2482: result: yes
+configure:2610: checking for gcc
+configure:2626: found /usr/bin/gcc
+configure:2637: result: gcc
+configure:2866: checking for C compiler version
+configure:2875: gcc --version >&5
 gcc (Ubuntu/Linaro 4.4.4-14ubuntu5) 4.4.5
 Copyright (C) 2010 Free Software Foundation, Inc.
 This is free software; see the source for copying conditions.  There is NO
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-configure:2882: $? = 0
-configure:2871: gcc -v >&5
+configure:2886: $? = 0
+configure:2875: gcc -v >&5
 Using built-in specs.
 Target: i686-linux-gnu
 Configured with: ../src/configure -v --with-pkgversion='Ubuntu/Linaro 4.4.4-14ubuntu5' --with-bugurl=file:///usr/share/doc/gcc-4.4/README.Bugs --enable-languages=c,c++,fortran,objc,obj-c++ --prefix=/usr --program-suffix=-4.4 --enable-shared --enable-multiarch --enable-linker-build-id --with-system-zlib --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --with-gxx-include-dir=/usr/include/c++/4.4 --libdir=/usr/lib --enable-nls --with-sysroot=/ --enable-clocale=gnu --enable-libstdcxx-debug --enable-objc-gc --enable-targets=all --disable-werror --with-arch-32=i686 --with-tune=generic --enable-checking=release --build=i686-linux-gnu --host=i686-linux-gnu --target=i686-linux-gnu
 Thread model: posix
 gcc version 4.4.5 (Ubuntu/Linaro 4.4.4-14ubuntu5) 
-configure:2882: $? = 0
-configure:2871: gcc -V >&5
+configure:2886: $? = 0
+configure:2875: gcc -V >&5
 gcc: '-V' option must have argument
-configure:2882: $? = 1
-configure:2871: gcc -qversion >&5
+configure:2886: $? = 1
+configure:2875: gcc -qversion >&5
 gcc: unrecognized option '-qversion'
 gcc: no input files
-configure:2882: $? = 1
-configure:2902: checking whether the C compiler works
-configure:2924: gcc    conftest.c  >&5
-configure:2928: $? = 0
-configure:2976: result: yes
-configure:2979: checking for C compiler default output file name
-configure:2981: result: a.out
-configure:2987: checking for suffix of executables
-configure:2994: gcc -o conftest    conftest.c  >&5
-configure:2998: $? = 0
-configure:3020: result: 
-configure:3042: checking whether we are cross compiling
-configure:3050: gcc -o conftest    conftest.c  >&5
-configure:3054: $? = 0
-configure:3061: ./conftest
-configure:3065: $? = 0
-configure:3080: result: no
-configure:3085: checking for suffix of object files
-configure:3107: gcc -c   conftest.c >&5
-configure:3111: $? = 0
-configure:3132: result: o
-configure:3136: checking whether we are using the GNU C compiler
-configure:3155: gcc -c   conftest.c >&5
-configure:3155: $? = 0
-configure:3164: result: yes
-configure:3173: checking whether gcc accepts -g
-configure:3193: gcc -c -g  conftest.c >&5
-configure:3193: $? = 0
-configure:3234: result: yes
-configure:3251: checking for gcc option to accept ISO C89
-configure:3315: gcc  -c -g -O2  conftest.c >&5
-configure:3315: $? = 0
-configure:3328: result: none needed
-configure:3359: checking for style of include used by make
-configure:3387: result: GNU
-configure:3412: checking dependency style of gcc
-configure:3522: result: gcc3
-configure:3547: checking how to run the C preprocessor
-configure:3578: gcc -E  conftest.c
-configure:3578: $? = 0
-configure:3592: gcc -E  conftest.c
+configure:2886: $? = 1
+configure:2906: checking whether the C compiler works
+configure:2928: gcc    conftest.c  >&5
+configure:2932: $? = 0
+configure:2980: result: yes
+configure:2983: checking for C compiler default output file name
+configure:2985: result: a.out
+configure:2991: checking for suffix of executables
+configure:2998: gcc -o conftest    conftest.c  >&5
+configure:3002: $? = 0
+configure:3024: result: 
+configure:3046: checking whether we are cross compiling
+configure:3054: gcc -o conftest    conftest.c  >&5
+configure:3058: $? = 0
+configure:3065: ./conftest
+configure:3069: $? = 0
+configure:3084: result: no
+configure:3089: checking for suffix of object files
+configure:3111: gcc -c   conftest.c >&5
+configure:3115: $? = 0
+configure:3136: result: o
+configure:3140: checking whether we are using the GNU C compiler
+configure:3159: gcc -c   conftest.c >&5
+configure:3159: $? = 0
+configure:3168: result: yes
+configure:3177: checking whether gcc accepts -g
+configure:3197: gcc -c -g  conftest.c >&5
+configure:3197: $? = 0
+configure:3238: result: yes
+configure:3255: checking for gcc option to accept ISO C89
+configure:3319: gcc  -c -g -O2  conftest.c >&5
+configure:3319: $? = 0
+configure:3332: result: none needed
+configure:3363: checking for style of include used by make
+configure:3391: result: GNU
+configure:3416: checking dependency style of gcc
+configure:3526: result: gcc3
+configure:3551: checking how to run the C preprocessor
+configure:3582: gcc -E  conftest.c
+configure:3582: $? = 0
+configure:3596: gcc -E  conftest.c
 conftest.c:11: fatal error: ac_nonexistent.h: No such file or directory
 compilation terminated.
-configure:3592: $? = 1
+configure:3596: $? = 1
 configure: failed program was:
 | /* confdefs.h */
 | #define PACKAGE_NAME "dictionary"
@@ -133,13 +133,13 @@ configure: failed program was:
 | #define VERSION "0.1"
 | /* end confdefs.h.  */
 | #include <ac_nonexistent.h>
-configure:3617: result: gcc -E
-configure:3637: gcc -E  conftest.c
-configure:3637: $? = 0
-configure:3651: gcc -E  conftest.c
+configure:3621: result: gcc -E
+configure:3641: gcc -E  conftest.c
+configure:3641: $? = 0
+configure:3655: gcc -E  conftest.c
 conftest.c:11: fatal error: ac_nonexistent.h: No such file or directory
 compilation terminated.
-configure:3651: $? = 1
+configure:3655: $? = 1
 configure: failed program was:
 | /* confdefs.h */
 | #define PACKAGE_NAME "dictionary"
@@ -152,69 +152,69 @@ configure: failed program was:
 | #define VERSION "0.1"
 | /* end confdefs.h.  */
 | #include <ac_nonexistent.h>
-configure:3680: checking for grep that handles long lines and -e
-configure:3738: result: /bin/grep
-configure:3743: checking for egrep
-configure:3805: result: /bin/grep -E
-configure:3810: checking for ANSI C header files
-configure:3830: gcc -c -g -O2  conftest.c >&5
-configure:3830: $? = 0
-configure:3903: gcc -o conftest -g -O2   conftest.c  >&5
-configure:3903: $? = 0
-configure:3903: ./conftest
-configure:3903: $? = 0
-configure:3914: result: yes
-configure:3927: checking for sys/types.h
-configure:3927: gcc -c -g -O2  conftest.c >&5
-configure:3927: $? = 0
-configure:3927: result: yes
-configure:3927: checking for sys/stat.h
-configure:3927: gcc -c -g -O2  conftest.c >&5
-configure:3927: $? = 0
-configure:3927: result: yes
-configure:3927: checking for stdlib.h
-configure:3927: gcc -c -g -O2  conftest.c >&5
-configure:3927: $? = 0
-configure:3927: result: yes
-configure:3927: checking for string.h
-configure:3927: gcc -c -g -O2  conftest.c >&5
-configure:3927: $? = 0
-configure:3927: result: yes
-configure:3927: checking for memory.h
-configure:3927: gcc -c -g -O2  conftest.c >&5
-configure:3927: $? = 0
-configure:3927: result: yes
-configure:3927: checking for strings.h
-configure:3927: gcc -c -g -O2  conftest.c >&5
-configure:3927: $? = 0
-configure:3927: result: yes
-configure:3927: checking for inttypes.h
-configure:3927: gcc -c -g -O2  conftest.c >&5
-configure:3927: $? = 0
-configure:3927: result: yes
-configure:3927: checking for stdint.h
-configure:3927: gcc -c -g -O2  conftest.c >&5
-configure:3927: $? = 0
-configure:3927: result: yes
-configure:3927: checking for unistd.h
-configure:3927: gcc -c -g -O2  conftest.c >&5
-configure:3927: $? = 0
-configure:3927: result: yes
-configure:3942: checking for stdlib.h
-configure:3942: result: yes
-configure:3942: checking for string.h
-configure:3942: result: yes
-configure:3954: checking for stdbool.h that conforms to C99
-configure:4039: gcc -c -g -O2  conftest.c >&5
-configure:4039: $? = 0
-configure:4046: result: yes
-configure:4048: checking for _Bool
-configure:4048: gcc -c -g -O2  conftest.c >&5
-configure:4048: $? = 0
-configure:4048: gcc -c -g -O2  conftest.c >&5
+configure:3684: checking for grep that handles long lines and -e
+configure:3742: result: /bin/grep
+configure:3747: checking for egrep
+configure:3809: result: /bin/grep -E
+configure:3814: checking for ANSI C header files
+configure:3834: gcc -c -g -O2  conftest.c >&5
+configure:3834: $? = 0
+configure:3907: gcc -o conftest -g -O2   conftest.c  >&5
+configure:3907: $? = 0
+configure:3907: ./conftest
+configure:3907: $? = 0
+configure:3918: result: yes
+configure:3931: checking for sys/types.h
+configure:3931: gcc -c -g -O2  conftest.c >&5
+configure:3931: $? = 0
+configure:3931: result: yes
+configure:3931: checking for sys/stat.h
+configure:3931: gcc -c -g -O2  conftest.c >&5
+configure:3931: $? = 0
+configure:3931: result: yes
+configure:3931: checking for stdlib.h
+configure:3931: gcc -c -g -O2  conftest.c >&5
+configure:3931: $? = 0
+configure:3931: result: yes
+configure:3931: checking for string.h
+configure:3931: gcc -c -g -O2  conftest.c >&5
+configure:3931: $? = 0
+configure:3931: result: yes
+configure:3931: checking for memory.h
+configure:3931: gcc -c -g -O2  conftest.c >&5
+configure:3931: $? = 0
+configure:3931: result: yes
+configure:3931: checking for strings.h
+configure:3931: gcc -c -g -O2  conftest.c >&5
+configure:3931: $? = 0
+configure:3931: result: yes
+configure:3931: checking for inttypes.h
+configure:3931: gcc -c -g -O2  conftest.c >&5
+configure:3931: $? = 0
+configure:3931: result: yes
+configure:3931: checking for stdint.h
+configure:3931: gcc -c -g -O2  conftest.c >&5
+configure:3931: $? = 0
+configure:3931: result: yes
+configure:3931: checking for unistd.h
+configure:3931: gcc -c -g -O2  conftest.c >&5
+configure:3931: $? = 0
+configure:3931: result: yes
+configure:3946: checking for stdlib.h
+configure:3946: result: yes
+configure:3946: checking for string.h
+configure:3946: result: yes
+configure:3958: checking for stdbool.h that conforms to C99
+configure:4043: gcc -c -g -O2  conftest.c >&5
+configure:4043: $? = 0
+configure:4050: result: yes
+configure:4052: checking for _Bool
+configure:4052: gcc -c -g -O2  conftest.c >&5
+configure:4052: $? = 0
+configure:4052: gcc -c -g -O2  conftest.c >&5
 conftest.c: In function 'main':
 conftest.c:59: error: expected expression before ')' token
-configure:4048: $? = 1
+configure:4052: $? = 1
 configure: failed program was:
 | /* confdefs.h */
 | #define PACKAGE_NAME "dictionary"
@@ -279,8 +279,8 @@ configure: failed program was:
 |   ;
 |   return 0;
 | }
-configure:4048: result: yes
-configure:4224: creating ./config.status
+configure:4052: result: yes
+configure:4192: creating ./config.status
 
 ## ---------------------- ##
 ## Running config.status. ##
@@ -297,8 +297,9 @@ generated by GNU Autoconf 2.67.  Invocation command line was
 
 on chid-netbook
 
-config.status:781: creating Makefile
-config.status:952: executing depfiles commands
+config.status:860: creating Makefile
+config.status:860: creating config.h
+config.status:1088: executing depfiles commands
 
 ## ---------------- ##
 ## Cache variables. ##
@@ -367,7 +368,7 @@ CFLAGS='-g -O2'
 CPP='gcc -E'
 CPPFLAGS=''
 CYGPATH_W='echo'
-DEFS='-DPACKAGE_NAME=\"dictionary\" -DPACKAGE_TARNAME=\"dictionary\" -DPACKAGE_VERSION=\"0.1\" -DPACKAGE_STRING=\"dictionary\ 0.1\" -DPACKAGE_BUGREPORT=\"cpeng92@gmail.com\" -DPACKAGE_URL=\"\" -DPACKAGE=\"dictionary\" -DVERSION=\"0.1\" -DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE__BOOL=1 -DHAVE_STDBOOL_H=1'
+DEFS='-DHAVE_CONFIG_H'
 DEPDIR='.deps'
 ECHO_C=''
 ECHO_N='-n'
@@ -482,5 +483,41 @@ generated by GNU Autoconf 2.67.  Invocation command line was
 
 on chid-netbook
 
-config.status:781: creating Makefile
-config.status:952: executing depfiles commands
+config.status:860: creating Makefile
+config.status:1088: executing depfiles commands
+
+## ---------------------- ##
+## Running config.status. ##
+## ---------------------- ##
+
+This file was extended by dictionary config.status 0.1, which was
+generated by GNU Autoconf 2.67.  Invocation command line was
+
+  CONFIG_FILES    = 
+  CONFIG_HEADERS  = 
+  CONFIG_LINKS    = 
+  CONFIG_COMMANDS = 
+  $ ./config.status Makefile depfiles
+
+on chid-netbook
+
+config.status:860: creating Makefile
+config.status:1088: executing depfiles commands
+
+## ---------------------- ##
+## Running config.status. ##
+## ---------------------- ##
+
+This file was extended by dictionary config.status 0.1, which was
+generated by GNU Autoconf 2.67.  Invocation command line was
+
+  CONFIG_FILES    = 
+  CONFIG_HEADERS  = 
+  CONFIG_LINKS    = 
+  CONFIG_COMMANDS = 
+  $ ./config.status Makefile depfiles
+
+on chid-netbook
+
+config.status:860: creating Makefile
+config.status:1088: executing depfiles commands
