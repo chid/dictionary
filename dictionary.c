@@ -28,7 +28,7 @@ dictInit () {
   struct dictionary* ndict = malloc(sizeof(struct dictionary));
   ndict->root = dictEdgeNew('\0');
   ndict->root = dictEdgeNew('\0');
-  ndict->root = dictEdgeNew('y');
+ // ndict->root = dictEdgeNew('y');
   return ndict;
 }
 
@@ -36,6 +36,23 @@ void printDict(struct dictionary* dict) {
   printf("%p",&dict);
   assert(dict->root != NULL);
   printf("%c",dict->root->thisChar);
+}
+
+void printEdge(struct dictEdge* dnode, long n) { // attempt to create a PreOrde
+  if (dnode == NULL) {
+    return;
+  }
+  int i;
+  for (i=0;i != n;++i)
+    printf("  ");
+  printf("%c\n",dnode->thisChar);
+  printEdge(dnode->child, n+1); 
+  struct dictEdge * rover = dnode;
+  while (rover->sibling != NULL) {
+    //printf("%c ",rover->thisChar);
+    printEdge(rover->sibling, n);
+    rover = rover->sibling;
+  }
 }
 
 struct dictEdge* dictEdgeNew(char thisChar) {
