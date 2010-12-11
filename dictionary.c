@@ -15,11 +15,14 @@ struct wlnode
 /* Initialise the dictionary structure
  */
 
+void 
+insertWordR (struct dictEdge * node, char* word);
 bool
 dictLookupN (struct dictEdge* node,char* word) ;
 void
 edgeFree(struct dictEdge *node);
 struct dictEdge* dictEdgeNew(char thisChar);
+void printDict(struct dictionary *dict);
 
 struct dictionary*
 dictInit () {
@@ -84,6 +87,8 @@ dictInsertWord (struct dictionary* dict, char* word) {
   } */
   
   // assume I'm not in the list.
+  insertWordR (dict->root, word); 
+  return;
 
   int i = 0;
   struct dictEdge* rover = dict->root;
@@ -100,7 +105,31 @@ dictInsertWord (struct dictionary* dict, char* word) {
 }
 
 void insertWordR (struct dictEdge * node, char* word) {
-  printf("%s",word);
+  if (word[0] == 0) {
+    // terminating
+    node->isTerminal = True;
+    return;
+  }
+  printf("input string-> %s\n",word);
+  
+  //stopping case, word[0] == \0
+  if (word[0] != '\0') {
+    insertWordR(node,&word[1]);
+  }
+
+ return;
+  int i = 0;
+  struct dictEdge* rover = node;
+  while (word[i] != 0) {
+    rover = node;
+    while (rover->child != NULL) {
+     rover = rover->child;
+    }
+   rover->child = dictEdgeNew(word[i]);
+    printf("new child pointing to %p\n",rover->child);
+   //dict->rootword[i];
+    ++i;
+  }
 }
 
 /* Insert a list of words into the dictionary 
