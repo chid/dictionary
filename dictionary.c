@@ -43,10 +43,12 @@ void printEdge(struct dictEdge* dnode, long n) { // attempt to create a PreOrde
     return;
   }
   int i;
+  //printf("%li\n",n);
   for (i=0;i != n;++i)
     printf("  ");
   printf("%c\n",dnode->thisChar);
   printEdge(dnode->child, n+1); 
+  return;
   struct dictEdge * rover = dnode;
   while (rover->sibling != NULL) {
     //printf("%c ",rover->thisChar);
@@ -61,10 +63,34 @@ struct dictEdge* dictEdgeNew(char thisChar) {
   ndictEdge->thisChar = thisChar;
   return ndictEdge;
 }
+
 /* Insert a single word into the dictionary 
  */
 void
-dictInsertWord (struct dictionary* dict, char* word);
+dictInsertWord (struct dictionary* dict, char* word) {
+  // make sure I can actually do operations on the word.
+/*  printf("%d",strlen(word));
+  int i = 0;
+  while (word[i] != 0) {
+    printf("%c\n",word[i]);
+    ++i;
+  } */
+  
+  // assume I'm not in the list.
+
+  int i = 0;
+  struct dictEdge* rover = dict->root;
+  while (word[i] != 0) {
+    rover = dict->root;
+    while (rover->child != NULL) {
+      rover = rover->child;
+    }
+    rover->child = dictEdgeNew(word[i]);
+    printf("new child pointing to %p\n",rover->child);
+    //dict->rootword[i];
+    ++i;
+  }
+}
 
 /* Insert a list of words into the dictionary 
  */

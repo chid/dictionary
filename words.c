@@ -11,7 +11,9 @@ int main (int argc, char** argv)
   printf("%p", &dict);
   printDict(dict);
   printDict(dict);
-
+  dictInsertWord(dict,"TEST");
+  printf("\n");
+printEdge(dict->root,0);
   //struct 
 #if 0
   // allocate WORDMAX + 2: 1 for new-line character, 1 for NUL-terminator.
