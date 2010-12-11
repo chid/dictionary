@@ -18,13 +18,24 @@ struct lnode
 
 /* Initialise the dictionary structure
  */
+
+struct dictEdge* dictEdgeNew(char thisChar);
+
 struct dictionary*
 dictInit () {
   // we create a new dictionary
   // and then we return it
   struct dictionary* ndict = malloc(sizeof(struct dictionary));
-  
+  ndict->root = dictEdgeNew('\0');
+  ndict->root = dictEdgeNew('\0');
+  ndict->root = dictEdgeNew('y');
   return ndict;
+}
+
+void printDict(struct dictionary* dict) {
+  printf("%p",&dict);
+  assert(dict->root != NULL);
+  printf("%c",dict->root->thisChar);
 }
 
 struct dictEdge* dictEdgeNew(char thisChar) {
