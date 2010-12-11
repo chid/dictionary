@@ -14,6 +14,7 @@ int main (int argc, char** argv)
   dictInsertWord(dict,"TEST");
   dictInsertWord(dict,"Done");
   dictInsertWord(dict,"TEnt");
+  dictInsertWord(dict,"TE");// broken
   printf("\n");
 printEdge(dict->root,0);
 dictFree(dict);

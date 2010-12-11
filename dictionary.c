@@ -48,7 +48,13 @@ void printEdge(struct dictEdge* dnode, long n) { // attempt to create a PreOrde
   //printf("%li\n",n);
   for (i=0;i != n;++i)
     printf("  ");
-  printf("%c\n",dnode->thisChar);
+  
+  if (dnode->isTerminal == True) {
+    //printf("TERMIN");
+    printf("\033[1;33m%c\033[m\n",dnode->thisChar);
+  } else {
+    printf("%c\n",dnode->thisChar);
+  }
   if (dnode->thisChar == '\0') {
     // we are at the root node :)
     // print a * for fun
@@ -108,6 +114,7 @@ dictInsertWord (struct dictionary* dict, char* word) {
 }
 
 void insertWordR (struct dictEdge * node, char* word) {
+  assert(node != NULL);
   // FIX
   // Forgot about insert in order
   if (word[0] == 0) {
@@ -147,11 +154,15 @@ void insertWordR (struct dictEdge * node, char* word) {
          assert(rover->child != NULL);
          rover = rover->child;
       }
-      rover->child = dictEdgeNew(word[i]);
+      rover->child = dictEdgeNew(word[i]);      
       printf("new child pointing to %p\n",rover->child);
       //dict->rootword[i];
        ++i;
+      if (word[i] == '\0') {
+        rover->child->isTerminal = True;
+      }
   }
+
 }
    
     else {
