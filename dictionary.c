@@ -54,7 +54,10 @@ void printEdge(struct dictEdge* dnode, long n) { // attempt to create a PreOrde
     // print a * for fun
     printf("*\n");
   }
+
+
   printEdge(dnode->child, n+1); 
+  printEdge(dnode->sibling,n);
   return;
   struct dictEdge * rover = dnode;
   while (rover->sibling != NULL) {
@@ -150,7 +153,7 @@ void insertWordR (struct dictEdge * node, char* word) {
 }
    
     else {
-      insertWordR(rover,&word[1]);
+      insertWordR(rover->child,&word[1]);
     }
   }
 

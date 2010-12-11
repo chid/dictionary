@@ -13,6 +13,7 @@ int main (int argc, char** argv)
   printDict(dict);
   dictInsertWord(dict,"TEST");
   dictInsertWord(dict,"Done");
+  dictInsertWord(dict,"TEnt");
   printf("\n");
 printEdge(dict->root,0);
 dictFree(dict);
