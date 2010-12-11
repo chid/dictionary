@@ -115,6 +115,9 @@ dictInsertWord (struct dictionary* dict, char* word) {
 }
 
 void insertWordR (struct dictEdge * node, char* word) {
+  if (word[1] == 0) {
+    node->isTerminal = True;
+  }
   assert(node != NULL);
   // FIX
   // Forgot about insert in order
@@ -172,11 +175,12 @@ void insertWordR (struct dictEdge * node, char* word) {
         insertWordR(rover->child,&word[1]);
       }
       else {
-        rover->child = dictEdgeNew(word[1]);
         printf("->>%s\n",word);
         if (word[1] == '\0') { printf("WHY ISN'T THIS WORKING");rover->isTerminal = True; }
-          insertWordR(rover->child,&word[1]);
-        
+         else {
+           rover->child = dictEdgeNew(word[1]);
+           insertWordR(rover->child,&word[1]);
+        }
       }
     }
   }
@@ -305,4 +309,24 @@ dictGetRoot (struct dictionary* dict) {
 }
 
 
-
+struct wlnode* wlIns (struct wlnode* wl, char* word) {
+  // I am a singularly linked list
+  if (wl == NULL) {
+    struct wlnode* new = malloc(sizeof(struct wlnode));
+    assert(new != NULL);
+    new->word = word;
+    new->next = NULL;
+    return new;
+  }
+  else {
+    struct wlnode* rover = wl;
+    while (rover->next != NULL) {
+      rover = rover->next;
+    }
+    struct wlnode* new = malloc(sizeof(struct wlnode));
+    rover->next = new;
+    new->word = word;
+    assert(new != NULL);
+    return wl;
+  }
+}
