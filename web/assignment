@@ -1,0 +1,157 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title>11x1 COMP1927 Assignment</title>
+</head>
+
+<body bgcolor="White">
+<TABLE ALIGN="right">
+<TR><TD>
+<b>COMP1927 Computing 2</b>
+</TD></TR>
+<TR><TD>
+Version 2,
+Sat Dec 11 11:34:09 EST 2010
+</TD></TR>
+</TABLE>
+
+<h2>Dictionaries</h2>
+
+<h3>Overview</h3>
+
+<ul>
+<li><a href="interface.html">Interface</a>
+<li><a href="representation.html">Representation</a>,
+<a href="dictionary_type.h"><tt>dictionary_type.h</tt></a>
+<li><a href="dictionary.h"><tt>dictionary.h</tt></a>
+<li><a href="words.c">Simple client code</a>
+<li><a href="word_example.txt">Test data</a>
+<li><a href=https://wiki.cse.unsw.edu.au/cs1927cgi/10s1/DebuggingTools>Debugging
+Tools</a>
+<li><a href="automarker.html">Running auto tests</a>
+</ul>
+
+<h3>Description</h3>
+
+<p>
+Your task is to implement a dictionary data type that meets the given
+interface and whose implementation conforms to the given
+representation. In addition, you will have to write wrapper code to
+test your implementation. Ensure that you also test for boundary
+conditions and for memory management bugs. The automarker will use
+valgrind and mudflap to find memory management bugs. This
+<a href=https://wiki.cse.unsw.edu.au/cs1927cgi/10s1/DebuggingTools>Debugging
+Tools</a> page describes how this is done, so you should also use
+these tools during development.
+
+<p>
+You will only submit the C code implementing the dictionary data type
+(not your testing code). However, you need to write a <b>test plan</b>
+in which you document the kind of tests that you have performed on
+your ADT implementation. You should describe how you have exercised
+your ADT and kinds of cases you have tried. This journal is a simple
+text file, which you must name <tt>testing.txt</tt>. (Do <i>not</i>
+use a word processor to create the journal, but the same text editor
+that you use for programming.)
+
+<h3>Very simple example application</h3>
+
+As part of your testing, you may want to try to use your dictionary
+implementation with <tt>words.c</tt>. This simple program reads a stream of
+words from <tt>stdin</tt>, enters them into the dictionary, and dumps them back
+to stdout. Here is an example file with words to be entered into the
+dictionary: <tt>words_example.txt</tt>.
+
+<h3>Marking</h3>
+
+<p>
+The assignment is worth <b>15&nbsp;marks</b>. The marks breakdown is
+as follows:
+<p>
+<table border=1>
+<tr><td><b>Component</b> <td> <b>Marks</b></tr>
+<tr><td>Autotesting of functionality <td> 9</tr>
+<tr><td>Testing journal <td> 2 </tr>
+<tr><td>Complexity of <tt>dictCompletions</tt> <td> 2 </tr>
+<tr><td>Subjective evaluation of style <td> 2 </tr>
+</table>
+
+<h3>Submission deadline</h3>
+
+<p>
+The submission deadline is 14&nbsp;January 2011, 23:59 (Friday night).
+
+<p>
+Unless otherwise stated if you wish to submit an assignment late, you
+may do so, but a late penalty <b>reducing the maximum available
+mark</b> applies to every late assignment. The maximum available mark
+is reduced by&nbsp;10% if the assignment is one day late, by&nbsp;25%
+if it is 2&nbsp;days late and by&nbsp;50% if it is 3&nbsp;days
+late. Assignments that are late 4&nbsp;days or more will be awarded
+zero marks. So if your assignment is worth&nbsp;88% and you submit it
+one day late you still get&nbsp;88%, but if you submit it two days
+late you get&nbsp;75%, three days late&nbsp;50%, and four days late
+zero.
+
+<p>
+Assignment extensions are only awarded for serious and unforeseeable
+events. Having the flu for a few days, deleting your assignment by
+mistake, going on holiday, work commitments, etc., do not
+qualify. Therefore aim to complete your assignments well before the
+due date in case of last minute illness, and make regular backups of
+your work.
+
+<h3>Submission details</h3>
+
+To submit the assignment execute the following command on a CSE machine:
+<pre>
+give cs1927 ass2 dictionary.c testing.txt
+</pre>
+
+<p>
+Please ensure that your submitted code does not contain any debugging
+output and that it does not include a <tt>main()</tt>
+function. Otherwise, our autotests will fail, and any manual
+intervention required to compile and/or run your code in the testing
+frame work will attract a penalty (usually of 1&nbsp;mark).
+
+<p>
+You can check you submission with
+<pre>
+1927 classrun -check
+</pre>
+
+<p>
+The system permits you to submit multiple versions of your code. We
+will grade the last submission. Please already submit partial
+solutions and submit early. The system may be heavily loaded close to
+the deadline. We will not grant special considerations for late
+submissions due to delays of submissions close to the deadline.
+
+<h3>Plagiarism</h3>
+
+<p>
+This is an individual assignment. Each student will have to develop
+their own solution without help from other people. In particular, it
+is not permitted to exchange code or pseudocode. You are not allowed
+to use code developed by persons other than yourself. If you have
+questions about the assignment, ask your tutor or post a message in
+the course forum. It is not permitted to post solution code in the
+forum.
+
+<p>
+Before submitting any work you should read and understand the
+following very useful guide by the Learning Centre:
+<a href=http://www.lc.unsw.edu.au/plagiarism>How Not To
+Plagiarise</a>.
+
+<p>
+All work submitted for assessment must be entirely your own work. We
+regard unacknowledged copying of material, in whole or part, as an
+extremely serious offence. For further information, see the
+<a href=http://www.cse.unsw.edu.au/~cs1927/11x1/outline.html>Course
+Description</a>.
+
+</BODY>
+</HTML>
+

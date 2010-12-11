@@ -1,0 +1,1 @@
+wget -r -nd -k -I /~cs1927/11x1/assignment/ http://www.cse.unsw.edu.au/~cs1927/11x1/assignment

@@ -1,0 +1,49 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title>11x1 COMP1927 Assignment -- Representation</title>
+</head>
+
+<body bgcolor="White">
+<TABLE ALIGN="right">
+<TR><TD>
+<b>COMP1927 Computing 2</b>
+</TD></TR>
+<TR><TD>
+Version 2,
+Sat Dec 11 11:34:21 EST 2010
+</TD></TR>
+</TABLE>
+
+<h2>Dictionary representation</h2>
+
+<p>
+You are to represent the dictionary using the optimised tree representation
+given in the header <tt>dictionary_type.h</tt>. Include this header into your
+<tt>dictionary.c</tt> implementation, but not into any other files.
+
+<h3>Dictionaries as multi-way trees</h3>
+
+<p>
+We represent dictionaries as multi-branch trees with labelled edges:
+<pre>
+struct dictEdge
+{
+  char     thisChar;     /* character labelling this edge */
+  bool     isTerminal;   /* a word may end with character */
+  struct dictEdge* child;        /* suffix dictionary */
+  struct dictEdge* sibling;      /* next sibling edge */
+};
+</pre>
+
+<p>
+Any path from the root that ends in an edge whose <tt>isTerminal</tt> flag
+is set is a valid word in the dictionary. Dictionary nodes are implicitly
+represented by a set of edges connected via sibling links.
+
+<p>
+Siblings are ordered, but the value of <tt>thisChar</tt> is different
+for every edge of a single dictionary node. Sibling lists and tree paths
+are terminated by <tt>NULL</tt> links. 
+</body>
+</html>

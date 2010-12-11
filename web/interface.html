@@ -1,0 +1,177 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title>11x1 COMP1927 Assignment -- Interface</title>
+</head>
+
+<body bgcolor="White">
+<TABLE ALIGN="right">
+<TR><TD>
+<b>COMP1927 Computing 2</b>
+</TD></TR>
+<TR><TD>
+Version 3,
+Sat Dec 11 12:30:21 EST 2010
+</TD></TR>
+</TABLE>
+
+<h2>Dictionary interface</h2>
+
+<h3>Interface</h3>
+
+<p>
+This page describes the interface of the dictionary ADT that you are
+to implement. For your implementation, download
+<a href="dictionary.h"><tt>dictionary.h</tt></a> and
+implement each function whose prototype is given in the header
+file. You cannot freely choose a representation for the dictionary;
+instead, you must use the a fixed representation. All your code should go
+into a file <tt>dictionary.c</tt>, which you have to submit to complete
+the assignment. The following is a description of the components of
+the interface.
+
+<h3>Constants</h3>
+
+<p>
+We represent Booleans by
+<pre>
+typedef enum
+{
+  False,
+  True
+}
+bool;
+</pre>
+
+<h3>Word lists</h3>
+
+<p>
+We represent lists of words to be entered or extracted from the
+dictionary using the following linked list data structure:
+<pre>
+struct wlnode
+{
+  char* word;
+  struct wlnode* next;
+};
+</pre>
+
+<p>
+An empty linked list is represented by a <tt>NULL</tt> pointer (there is no
+dummy node for an empty list). The last element in the linked list has
+its next pointer set to <tt>NULL</tt>.
+
+<h3>Initialisation</h3>
+
+<p>
+Before any other dictionary functions may be invoked, the dictionary
+must be initialised:
+<pre>
+struct dictionary*
+dictInit ();
+</pre>
+
+<h3>Inserting</h3>
+
+<p>
+The following two functions insert into the dictionary one and
+multiple words, respectively:
+<pre>
+void
+dictInsertWord  (struct dictionary* dict, char* word);
+void
+dictInsertWords (struct dictionary* dict, struct wlnode* words);
+</pre>
+
+<h3>Searching</h3>
+
+<p>
+This function checks whether a given word is in the dictionary:
+<pre>
+bool
+dictLookup (struct dictionary* dict, char* word);
+</pre>
+
+<h3>Extracting</h3>
+
+<p>
+This function extracts all the words from a dictionary that start with
+a given prefix:
+<pre>
+struct wlnode*
+dictCompletions (struct dictionary* dict, char* word);
+</pre>
+
+<p>
+The prefix may be the empty string, in which case <tt>dictCompletions</tt>
+should return a list of all the words in the dictionary. Of course, if
+no words match then an empty list should be returned (just a NULL
+pointer). The memory allocated for the list nodes and strings in the
+returned list should be freed by the caller. The order of the elements
+in this list does not matter.
+
+<p>
+<b>NOTE</b>: 2 marks of the assignment are for the efficiency of this
+function. To get these marks, your code must meet three conditions:
+
+<ul>
+<li>
+The complexity of your code must be linear in the number of characters
+contained in the returned word list.
+<li>
+You must produce the result in one sweep through the dictionary tree;
+i.e., you may only visit each node/edge ones.
+<li>
+The space allocated for the words in the resulting word list must be
+<em>reasonable</em>; make the allocation dependent on the actual length
+of the individual words.
+</ul>
+
+<p>
+If your code does <b>not</b> meet these requirements, but is producing the
+correct result, you will still get some marks during automarking, but
+none or not all of the 2&nbsp;marks dedicated to the performance of
+<tt>dictCompletions()</tt>.
+
+<h3>Deleting</h3>
+
+<p>
+This function erases all dictionary entries and releases all the
+memory allocated for the dictionary.
+<pre>
+void
+dictFree (struct dictionary*);
+</pre>
+
+<h3>Returning Root of Trie</h3>
+
+<p>
+The last function returns the root of the dictionary. We will use this
+function to walk through your trie, so to check if you have correctly
+implemented the trie structure. We define the root to be the first
+node at the first level of the trie. If you have set your root as an
+empty string node, then please return its child node for this
+function.
+<pre>
+struct dictEdge*
+dictGetRoot (struct dictionary* dict);
+</pre>
+
+<p>
+Specifically, if the trie is empty, you should return <tt>NULL</tt>. If the
+trie is not empty, you should return the first node in the top level
+of your trie.
+
+<p>
+If you have named the root variable of your trie to be <tt>root</tt>,
+then your <tt>dictGetRoot</tt> would look as simple as the code below,
+assuming <tt>root</tt> is initialised as <tt>NULL</tt>:
+<pre>
+struct dictEdge*
+dictGetRoot (struct dictionary* dict)
+{ 
+  return dict->root ; 
+}
+</pre>
+</body>
+</html>
