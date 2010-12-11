@@ -1,24 +1,24 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <dictionary.h>/*
+#include <dictionary.h>
+
+/*
 struct wlnode
 {
   char* word;
   struct wlnode * next;
 };
 
-struct lnode
-{
-  char* word;
-  struct lnode* next;
-};
-
-*/
+                        */
 
 /* Initialise the dictionary structure
  */
 
+bool
+dictLookupN (struct dictEdge* node,char* word) ;
+void
+edgeFree(struct dictEdge *node);
 struct dictEdge* dictEdgeNew(char thisChar);
 
 struct dictionary*
@@ -46,6 +46,11 @@ void printEdge(struct dictEdge* dnode, long n) { // attempt to create a PreOrde
   for (i=0;i != n;++i)
     printf("  ");
   printf("%c\n",dnode->thisChar);
+  if (dnode->thisChar == '\0') {
+    // we are at the root node :)
+    // print a * for fun
+    printf("*\n");
+  }
   printEdge(dnode->child, n+1); 
   return;
   struct dictEdge * rover = dnode;
@@ -94,16 +99,52 @@ dictInsertWord (struct dictionary* dict, char* word) {
   }
 }
 
+void insertWordR (struct dictEdge * node, char* word) {
+  printf("%s",word);
+}
+
 /* Insert a list of words into the dictionary 
  */
 void
-dictInsertWords (struct dictionary* dict, struct wlnode* words);
+dictInsertWords (struct dictionary* dict, struct wlnode* words) {
+  // UNTESTED
+  // FIX
+  while (words != NULL) {
+    dictInsertWord(dict,words->word);
+    words = words->next;
+  }
+  
+}
 
 /* Check whether a given word is in the dictionary
  */
 
 bool
-dictLookup (struct dictionary* dict, char* word);
+dictLookup (struct dictionary* dict, char* word) {
+  // TODO: this
+  // is there a more efficient way.
+  // FIX
+  // I will recursively define it.
+  // UNTESTED
+  char first = word[0];
+  struct dictEdge *rover = dict->root;
+  while (rover != NULL) { 
+  if (first == rover->thisChar) {
+    return dictLookupN(rover->child,&word[1]);
+  } else {
+    // USE A GOTO :D
+
+  }
+  rover = rover->sibling;
+  }
+  // still have a lot to do with this one.
+  return False;
+}
+
+bool
+dictLookupN (struct dictEdge* node,char* word) {
+  return False;
+}
 
 /* Extract all words in the dictionary (the order does not matter).
  *

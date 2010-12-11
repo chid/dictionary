@@ -50,7 +50,7 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_word_OBJECTS = words.$(OBJEXT) dictionary.$(OBJEXT)
+am_word_OBJECTS = dictionary.$(OBJEXT) words.$(OBJEXT)
 word_OBJECTS = $(am_word_OBJECTS)
 word_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I.
@@ -162,7 +162,8 @@ target_alias =
 top_build_prefix = 
 top_builddir = .
 top_srcdir = .
-word_SOURCES = words.c dictionary.h dictionary_type.h dictionary.c
+# word_SOURCES = words.c dictionary.h dictionary_type.h dictionary.c
+word_SOURCES = dictionary.h dictionary_type.h dictionary.c words.c  
 AM_CFLAGS = -Wall
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
