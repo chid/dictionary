@@ -27,7 +27,6 @@ dictInit () {
   // and then we return it
   struct dictionary* ndict = malloc(sizeof(struct dictionary));
   ndict->root = dictEdgeNew('\0');
-  ndict->root = dictEdgeNew('\0');
  // ndict->root = dictEdgeNew('y');
   return ndict;
 }
@@ -61,6 +60,9 @@ struct dictEdge* dictEdgeNew(char thisChar) {
   struct dictEdge *ndictEdge = malloc(sizeof(struct dictEdge));
   assert(ndictEdge != NULL);
   ndictEdge->thisChar = thisChar;
+  ndictEdge->child = NULL;
+  ndictEdge->sibling = NULL;
+  ndictEdge->isTerminal = 0;
   return ndictEdge;
 }
 
@@ -114,14 +116,46 @@ dictCompletions (struct dictionary* dict, char* word);
  * dictionary.
  */
 void
-dictFree (struct dictionary* dict);
+dictFree (struct dictionary* dict) {
+  // the plan, free all the nodes then free the dictionary :)
+
+  /*
+  struct dictEdge* rover = dict->root;
+  rover->thisChar = '\0'; // just for fun
+  rover->thisChar = '\0'; // just for fun
+  rover->thisChar = '\0'; // just for fun
+
+  while (rover->sibling != NULL) {
+    edgeFree(rover->sibling);
+    rover = rover->sibling;
+  }
+  */
+  edgeFree(dict->root);
+
+  // free the dictionary is easy
+  free(dict);
+}
+
+// internal call
+
+// recursively free all the nodes
+void
+edgeFree(struct dictEdge *node) {
+  if (node != NULL) {   
+    edgeFree(node->sibling);
+    edgeFree(node->child);
+    free(node);
+  }
+}
 
 /* Return the root of the trie (i.e. dictionary). 
  * If the dictionary is empty, then return NULL. 
  * Otherwise, return the root of the trie. 
  */ 
 struct dictEdge*
-dictGetRoot (struct dictionary* dict) ; 
+dictGetRoot (struct dictionary* dict) { 
+  return dict->root;
+}
 
 
 
