@@ -41,11 +41,11 @@ void dictListN(struct dictEdge* root,char* word) {
   } */
 
   dictListN(root->sibling,word);
-  if (root->thisChar == 0)
-    return; 
+ // if (root->thisChar == 0)
+   // return; 
   assert(root->thisChar != '\0');
 
-
+char *nword == NULL;
   if (word == NULL) {
     word = malloc(sizeof(char)*2);
     // *word = sprintf("%c\0",root->thisChar);
@@ -54,9 +54,16 @@ void dictListN(struct dictEdge* root,char* word) {
     word[1] = 0;
   } else {
     int i = strlen(word) + 2; // the array size is strlen(word)+1
-    word = realloc (word, sizeof(char)*(strlen(word)+2));
-    word[i-1] = 0;
-    word[i-2] = root->thisChar;
+    // word = realloc (word, sizeof(char)*(strlen(word)+2));
+    nword = malloc (sizeof(char)*(strlen(word)+2));
+    int j = 0;
+    while (word[j] != 0) {
+      nword[j] = word[j];
+      ++j;
+    }
+
+    nword[i-1] = 0;
+    nword[i-2] = root->thisChar;
 //    printf("ATTEMPTING TO REALLOC for >%c<",root->thisChar);
     // add the char to the end of word, and/or move the pointer:)
     // printf("%d vs %d\n",i,strlen(word));
@@ -64,12 +71,12 @@ void dictListN(struct dictEdge* root,char* word) {
 
   if (root->isTerminal == True) {
     printf("ISTERMINAL PRINTING OUT WORD len(%d)\n",strlen(word));
-    printf("%s\n",word);
+    printf("%s\n",nword);
   }
 
 //   dictListN(root->sibling,word);
   // printf("%c ",root->thisChar);
-  dictListN(root->child,word);
+  dictListN(root->child,nword);
   
 }
 
@@ -83,20 +90,25 @@ dictLookupN (struct dictEdge* node,char* word) ;
 void
 edgeFree(struct dictEdge *node);
 struct dictEdge* dictEdgeNew(char thisChar);
-void printDict(struct dictionary *dict);
+void 
+printDict(struct dictionary *dict);
 
 struct dictionary*
 dictInit () {
   // we create a new dictionary
   // and then we return it
   struct dictionary* ndict = malloc(sizeof(struct dictionary));
-  ndict->root = dictEdgeNew('\0');
+  // ndict->root = dictEdgeNew('\0');
+  ndict->root = NULL;
  // ndict->root = dictEdgeNew('y');
   return ndict;
 }
 
 void printDict(struct dictionary* dict) {
   printf("%p",&dict);
+  if (dict->root == NULL) {
+    return;
+  }
   assert(dict->root != NULL);
   printf("%c",dict->root->thisChar);
 }
@@ -158,6 +170,9 @@ dictInsertWord (struct dictionary* dict, char* word) {
   } */
   
   // assume I'm not in the list.
+  if (dict->root == NULL) {
+    dict->root = dictEdgeNew(word[0]);
+  }
   insertWordR (dict->root, word); 
   return;
 

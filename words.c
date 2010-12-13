@@ -24,6 +24,8 @@ dict = dictInit();
   wl = wlIns(wl,"OK");
   wl = wlIns(wl,"Oweariej");
   wl = wlIns(wl,"OKfnmk");
+  wl = wlIns(wl,"NOK");
+  wl = wlIns(wl,"NOOK");
 printwl(wl);//struct 
   dictInsertWords(dict,wl);
   printEdge(dict->root,0)
