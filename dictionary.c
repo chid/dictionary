@@ -246,6 +246,7 @@ dictInsertWord (struct dictionary* dict, char* word) {
   if (dict->root == NULL) {
     dict->root = dictEdgeNew(word[0]);
   }
+
   insertWordR (dict->root, word); 
   return;
 
@@ -265,9 +266,11 @@ dictInsertWord (struct dictionary* dict, char* word) {
 
 void insertWordR (struct dictEdge * node, char* word) {
   assert(node != NULL);
+// forgot why I had this assertion :$
+/*
   if (word[1] == 0) {
     node->isTerminal = True;
-  }
+  } */
   // FIX
   // Forgot about insert in order
   if (word[0] == 0) {
@@ -292,6 +295,7 @@ void insertWordR (struct dictEdge * node, char* word) {
       rover = rover->sibling; }
     }
     if (found == False) {
+      printf("not found with arg %s\n",word);
       // just add the whole word in.
       rover = node; 
       while (rover->sibling != NULL) {
@@ -300,20 +304,26 @@ void insertWordR (struct dictEdge * node, char* word) {
      rover->sibling = dictEdgeNew(word[0]);
      node = rover->sibling;
 
-      int i = 1;while (word[i] != 0) {
-      struct dictEdge* rover = node;
-      int j;
-      for (j=0;j<i-1;j++) {
-         assert(rover->child != NULL);
-         rover = rover->child;
-      }
-      rover->child = dictEdgeNew(word[i]);      
+      int i = 1;
+      while (word[i] != 0) {
+       struct dictEdge* rover = node;
+        int j;
+        for (j=0;j<i-1;j++) {
+           assert(rover->child != NULL);
+           rover = rover->child;
+        }
+        rover->child = dictEdgeNew(word[i]);      
      //  printf("new child pointing to %p\n",rover->child);
       //dict->rootword[i];
-       ++i;
-      if (word[i] == '\0') {
-        rover->child->isTerminal = True;
-      }
+        ++i;
+       if (word[i] == '\0') {
+          rover->child->isTerminal = True;
+        }
+  }
+  if (i == 1) { // bug fix.
+    // we didn't enter loop
+    // then the node is the final element
+    node->isTerminal = True;
   }
 
 }

@@ -24,13 +24,6 @@ struct wlnode
   struct wlnode * next;
 };
 
-struct lnode
-{
-  char* word;
-  struct lnode* next;
-};
-
-
 
 /* Initialise the dictionary structure
  */
