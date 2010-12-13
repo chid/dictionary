@@ -137,10 +137,11 @@ distCompletionsN (struct dictEdge* root,char* word,char *store,
     printf("adding word %s\n",word);
     char *str = malloc(sizeof(char)*(level + 2));
     strcpy(str,store);
+    printf("adding word %s\n",str);
     head = wlIns(head,str);
   }
-  if (word[0] == root->thisChar) {
-    printf("we have a hit!\n");
+  if (word[level] == root->thisChar) {
+    printf("we have a hit for %c!\n",word[level]);
     distCompletionsN (root->child,word,store,level+1,head);
   } else {
     distCompletionsN (root->sibling,word,store,level,head);
