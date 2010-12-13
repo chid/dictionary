@@ -103,17 +103,49 @@ dictToWl(struct dictEdge* root,char* word,int level,struct wlnode* head) {
 struct wlnode*
 distCompletions (struct dictionary* dict,char* word);
 void
-distCompletionsN (struct dictionary* dict,char* word) {
+distCompletionsN (struct dictEdge* root,char* word,char *store,
+  int level, struct wlnode* head);
 
 struct wlnode*
 distCompletions (struct dictionary* dict,char* word) {
   struct wlnode* a = wlIns(NULL,"hi angel");
-  a = distCompletionsN(dict->root,word,0,NULL,a);
+  distCompletionsN(dict->root,word,0,NULL,a);
+  return a;
   struct wlnode* re = a->next;
+  a->next = NULL;
+  free(a);
+  return re;
 }
 
 void
-distCompletionsN (struct dictionary* dict,char* word) {
+distCompletionsN (struct dictEdge* root,char* word,char *store,
+  int level, struct wlnode* head) {
+  if (root == NULL || root == 0x19) { // for some reason this works
+    return head;
+  }
+  if (store == NULL) {
+    store = malloc(sizeof(char)*2);
+    store[0] = root->thisChar;
+    store[1] = 0;
+  } else {
+    int i = level + 2; // the array size is strlen(word)+1
+    store = realloc (store, sizeof(char)*(i));
+    store[i-1] = 0;
+    store[i-2] = root->thisChar;
+  }
+  if (root->isTerminal == True) {
+    printf("adding word %s\n",word);
+    char *str = malloc(sizeof(char)*(level + 2));
+    strcpy(str,store);
+    head = wlIns(head,str);
+  }
+  if (word[0] == root->thisChar) {
+    printf("we have a hit!\n");
+    distCompletionsN (root->child,word,store,level+1,head);
+  } else {
+    distCompletionsN (root->sibling,word,store,level,head);
+  }
+  return head;
 }
 // just to test out a few algorithms.
 struct wlnode* 
