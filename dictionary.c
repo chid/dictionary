@@ -76,7 +76,7 @@ wlIns(struct wlnode* head,char* word);
 
 struct wlnode*
 dictToWl(struct dictEdge* root,char* word,int level,struct wlnode* head) {
-  if (root == NULL || root == 0x19) { // for some reason this works
+  if (root == NULL) { // for some reason this works
     return head;
   }
   if (word == NULL) {
@@ -109,7 +109,7 @@ distCompletionsN (struct dictEdge* root,char* word,char *store,
 struct wlnode*
 distCompletions (struct dictionary* dict,char* word) {
   struct wlnode* a = wlIns(NULL,"hi angel");
-  distCompletionsN(dict->root,word,0,NULL,a);
+  distCompletionsN(dict->root,word,NULL,0,a);
   return a;
   struct wlnode* re = a->next;
   a->next = NULL;
@@ -120,8 +120,9 @@ distCompletions (struct dictionary* dict,char* word) {
 void
 distCompletionsN (struct dictEdge* root,char* word,char *store,
   int level, struct wlnode* head) {
-  if (root == NULL || root == 0x19) { // for some reason this works
-    return head;
+//  if (root == NULL || root == 0x19) { // for some reason this works
+  if (root == NULL) {
+    return;
   }
   if (store == NULL) {
     store = malloc(sizeof(char)*2);
@@ -150,7 +151,6 @@ distCompletionsN (struct dictEdge* root,char* word,char *store,
   } else {
     distCompletionsN (root->sibling,word,store,level,head);
   }
-  return head;
 }
 // just to test out a few algorithms.
 struct wlnode* 
@@ -437,9 +437,10 @@ dictLookupN (struct dictEdge* node,char* word) {
  */
 struct wlnode*
 dictCompletions (struct dictionary* dict, char* word) {
-  struct wlnode * re = NULL;
+//  struct wlnode * re = NULL;
 
-  return re;
+  // return re;
+  return distCompletions(dict,word);
 }
 
 /* testing functions for the above */

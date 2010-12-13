@@ -59,9 +59,9 @@ printwl(wl);//struct
   struct wlnode* a = dictToWl(dict->root,NULL,0,b);
   printwl(a);
 printf("testing, completions\n");
-  printwl(distCompletions(dict,"OK"));
-  printwl(distCompletions(dict,"NO"));
-  printwl(distCompletions(dict,"N"));
+  printwl(dictCompletions(dict,"OK"));
+  printwl(dictCompletions(dict,"NO"));
+  printwl(dictCompletions(dict,"N"));
   // dictList(dict);
   // n is for internal
 #endif
@@ -91,9 +91,9 @@ printf("COMPLETIONS\n");
   struct wlnode* a = dictToWl(dict->root,NULL,0,b);
   printwl(a);return; */
   //printDict(dict);return;
-  printEdge(dict->root,0);return;
+ //  printEdge(dict->root,0);return;
   // change string to get different results:
-  wl = distCompletions (dict, argc < 2 ? "" : argv[1]);
+  wl = dictCompletions (dict, argc < 2 ? "" : argv[1]);
   for (cur = wl; NULL != cur; cur =  cur->next)
     fprintf (stdout, "%s\n", cur->word);
 
@@ -107,7 +107,7 @@ printf("COMPLETIONS\n");
     free (cur); */
   }
 
-  dictFree (dict);
+//  dictFree (dict);
 #endif
   return EXIT_SUCCESS;
 }
