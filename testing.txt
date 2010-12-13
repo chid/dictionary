@@ -9,3 +9,8 @@ create inorder and preorder print :)
 such that the tree structure can be recreated.
 
 try use ANSI CODES for bold to indicate ends of words :)
+
+
+I have written a function to print all the list words ;)
+// not sure about analysing the complexity...
+but yeah, it just pretty much does extract(root,"");

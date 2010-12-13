@@ -24,15 +24,20 @@ void dictTrav(struct dictEdge* root) {
   dictTrav(root->sibling);
 }
 
-void dictList(struct dictionary* dict);
-void dictListN(struct dictEdge* root,char* word,int level);
-void dictList(struct dictionary* dict) {
+void 
+dictList(struct dictionary* dict);
+void 
+dictListN(struct dictEdge* root,char* word,int level);
+struct wlnode*
+dictToWl(struct dictEdge* root,char* word,int level,struct wlnode* head);
+void 
+dictList(struct dictionary* dict) {
   dictListN(dict->root,NULL,0);
 }
 void dictListN(struct dictEdge* root,char* word,int level) {
   if (root == NULL)
     return;
-
+  printf("%p\n",root);
   // word
   /*
   if (root->isTerminal == True) {
@@ -67,6 +72,40 @@ void dictListN(struct dictEdge* root,char* word,int level) {
   dictListN(root->child,word,level+1);
 }
 
+struct wlnode* 
+wlIns(struct wlnode* head,char* word);
+struct wlnode*
+dictToWl(struct dictEdge* root,char* word,int level,struct wlnode* head) {
+  if (root == NULL || root = 0x19) {
+    return;
+  }
+
+  if (word == NULL) {
+    word = malloc(sizeof(char)*2);
+    word[0] = root->thisChar;
+    word[1] = 0;
+  } else {
+    int i = level + 2; // the array size is strlen(word)+1
+    word = realloc (word, sizeof(char)*(i));
+    word[i-1] = 0;
+//    word[i-2] = root->thisChar;
+  }
+  printf("called\n");
+  printf("%p\n",root);
+  if (root == 0x19) {
+     printf("BROKEN\n");
+     return;
+  }
+  if (root->isTerminal == True) {
+    head = wlIns(head,word);
+  }
+  dictToWl(root->child,word,level+1,head);
+  if (root->sibling != NULL) {
+    dictToWl(root->sibling,word,level,head);
+  }
+// printf("%p",root->child);
+  return head;
+}
 // just to test out a few algorithms.
 
 
@@ -398,8 +437,10 @@ dictGetRoot (struct dictionary* dict) {
   return dict->root;
 }
 
+// word list functions below :)
 
-struct wlnode* wlIns (struct wlnode* wl, char* word) {
+struct wlnode* 
+wlIns (struct wlnode* wl, char* word) {
   // I am a singularly linked list
   if (wl == NULL) {
     struct wlnode* new = malloc(sizeof(struct wlnode));
@@ -420,3 +461,12 @@ struct wlnode* wlIns (struct wlnode* wl, char* word) {
     return wl;
   }
 }
+/*
+void
+wlPrint (struct wlnode* wl) {
+  printf("starting wlprint\n");
+  while (wl != NULL) {
+    printf("%s\n",wl->word);
+    wl = wl->next;
+  }
+} */ // silly me :(

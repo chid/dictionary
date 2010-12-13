@@ -21,7 +21,7 @@ printEdge(dict->root,0);
 dictFree(dict);
 dict = dictInit();
   struct wlnode* wl = NULL;
-  wl = wlIns(wl,"OK");
+  wl = wlIns(wl,(char *)"OK");
   wl = wlIns(wl,"Oweariej");
   wl = wlIns(wl,"OKfnmk");
   wl = wlIns(wl,"NOK");
@@ -54,7 +54,10 @@ printwl(wl);//struct
   printf("testing treeListWords\n");
   dictList(dict);
   printf("\n");
-
+  struct wlnode* b = wlIns(NULL,"HIHIHI");
+  struct wlnode* a = dictToWl(dict,NULL,0,b);
+  printwl(a);
+  // dictList(dict);
   // n is for internal
 
 #if 0
