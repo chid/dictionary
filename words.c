@@ -42,6 +42,17 @@ printwl(wl);//struct
   }
   printf("Looked up %s in tree returned: %d\n","OK",dictLookupN(dict->root,"OK"));
   printf("Looked up %s in tree returned: %d\n","OKf",dictLookupN(dict->root,"OKf"));
+  printf("Looked up %s in tree returned: %d\n","OKf",dictLookupN(dict->root,"Kf"));
+  printf("testing treeTraversal");
+  dictTrav(dict->root);
+  printf("\n");
+
+  printf("testing treeListWords");
+  dictList(dict);
+  printf("\n");
+
+  // n is for internal
+
 #if 0
   // allocate WORDMAX + 2: 1 for new-line character, 1 for NUL-terminator.
   char     word[WORDMAX + 2];

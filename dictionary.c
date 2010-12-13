@@ -14,6 +14,33 @@ struct wlnode
 
 /* Initialise the dictionary structure
  */
+void dictTrav(struct dictEdge* root);
+void dictTrav(struct dictEdge* root) {
+  // recursive first.
+  if (root == NULL)
+    return;
+  printf("%c ",root->thisChar);
+  dictTrav(root->child);
+  dictTrav(root->sibling);
+}
+
+void dictList(struct dictionary* dict);
+void dictListN(struct dictEdge* root,char* word);
+void dictList(struct dictionary* dict) {
+  dictListN(dict->root,NULL);
+}
+void dictListN(struct dictEdge* root,char* word) {
+  if (root == NULL)
+    return;
+
+  // word
+  printf("%c ",root->thisChar);
+  dictTrav(root->child);
+  dictTrav(root->sibling);
+}
+
+// just to test out a few algorithms.
+
 
 void 
 insertWordR (struct dictEdge * node, char* word);
@@ -266,6 +293,8 @@ dictLookupN (struct dictEdge* node,char* word) {
   } else {
     // return dictLookupN(rover->child,&word[1]);
   }
+  assert(1 != 1); // I don't think I should by here
+  return False;
 }
 
 /* Extract all words in the dictionary (the order does not matter).
