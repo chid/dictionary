@@ -55,8 +55,10 @@ printwl(wl);//struct
   dictList(dict);
   printf("\n");
   struct wlnode* b = wlIns(NULL,"HIHIHI");
-  struct wlnode* a = dictToWl(dict,NULL,0,b);
-  printwl(a);
+  dictList(dict);
+  dictToWl(dict,NULL,0,b);
+  dictList(dict);
+  printwl(b);
   // dictList(dict);
   // n is for internal
 
