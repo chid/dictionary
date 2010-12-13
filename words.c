@@ -23,7 +23,7 @@ dict = dictInit();
   struct wlnode* wl = NULL;
   wl = wlIns(wl,"OK");
   wl = wlIns(wl,"Oweariej");
- wl = wlIns(wl,"OKfnmk");
+  wl = wlIns(wl,"OKfnmk");
 printwl(wl);//struct 
   dictInsertWords(dict,wl);
   printEdge(dict->root,0)
@@ -43,11 +43,11 @@ printwl(wl);//struct
   printf("Looked up %s in tree returned: %d\n","OK",dictLookupN(dict->root,"OK"));
   printf("Looked up %s in tree returned: %d\n","OKf",dictLookupN(dict->root,"OKf"));
   printf("Looked up %s in tree returned: %d\n","OKf",dictLookupN(dict->root,"Kf"));
-  printf("testing treeTraversal");
+  printf("testing treeTraversal\n\t");
   dictTrav(dict->root);
   printf("\n");
 
-  printf("testing treeListWords");
+  printf("testing treeListWords\n");
   dictList(dict);
   printf("\n");
 
