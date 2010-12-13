@@ -15,7 +15,9 @@ dictionary.o: dictionary.c /usr/include/assert.h /usr/include/features.h \
  /usr/include/bits/select.h /usr/include/bits/sigset.h \
  /usr/include/bits/time.h /usr/include/sys/sysmacros.h \
  /usr/include/bits/pthreadtypes.h /usr/include/alloca.h \
- /usr/include/bits/stdlib.h dictionary.h dictionary_type.h
+ /usr/include/bits/stdlib.h dictionary.h dictionary_type.h \
+ /usr/include/string.h /usr/include/xlocale.h /usr/include/bits/string.h \
+ /usr/include/bits/string2.h /usr/include/bits/string3.h
 
 /usr/include/assert.h:
 
@@ -90,3 +92,13 @@ dictionary.o: dictionary.c /usr/include/assert.h /usr/include/features.h \
 dictionary.h:
 
 dictionary_type.h:
+
+/usr/include/string.h:
+
+/usr/include/xlocale.h:
+
+/usr/include/bits/string.h:
+
+/usr/include/bits/string2.h:
+
+/usr/include/bits/string3.h:

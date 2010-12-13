@@ -2,15 +2,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <dictionary.h>
-
+#include <string.h>
 /*
 struct wlnode
 {
   char* word;
   struct wlnode * next;
-};
-
-                        */
+};  */
 
 /* Initialise the dictionary structure
  */
@@ -75,12 +73,12 @@ void dictListN(struct dictEdge* root,char* word,int level) {
 
 struct wlnode* 
 wlIns(struct wlnode* head,char* word);
+
 struct wlnode*
 dictToWl(struct dictEdge* root,char* word,int level,struct wlnode* head) {
-  if (root == NULL || root == 0x19) {
-    return;
+  if (root == NULL || root == 0x19) { // for some reason this works
+    return head;
   }
-
   if (word == NULL) {
     word = malloc(sizeof(char)*2);
     word[0] = root->thisChar;
@@ -92,19 +90,34 @@ dictToWl(struct dictEdge* root,char* word,int level,struct wlnode* head) {
     word[i-2] = root->thisChar;
   }
   if (root->isTerminal == True) {
-    printf("adding word %s\n",word);
-    head = wlIns(head,word);
+    //printf("adding word %s\n",word);
+    char *str = malloc(sizeof(char)*(level + 2));
+    strcpy(str,word);
+    head = wlIns(head,str);
   }
   dictToWl(root->child,word,level+1,head);
   dictToWl(root->sibling,word,level,head);
   return head;
 }
-// just to test out a few algorithms.
 
+struct wlnode*
+distCompletions (struct dictionary* dict,char* word);
+void
+distCompletionsN (struct dictionary* dict,char* word) {
+
+struct wlnode*
+distCompletions (struct dictionary* dict,char* word) {
+  struct wlnode* a = wlIns(NULL,"hi angel");
+  a = distCompletionsN(dict->root,word,0,NULL,a);
+  struct wlnode* re = a->next;
+}
+
+void
+distCompletionsN (struct dictionary* dict,char* word) {
+}
+// just to test out a few algorithms.
 struct wlnode* 
 wlIns(struct wlnode* head,char* word);
-
-
 void 
 insertWordR (struct dictEdge * node, char* word);
 bool
