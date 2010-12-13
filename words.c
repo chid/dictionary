@@ -86,6 +86,8 @@ printf("testing, completions\n");
 
 printf("COMPLETIONS\n");
   }
+  //printDict(dict);return;
+  printEdge(dict->root,0);return;
   // change string to get different results:
   wl = distCompletions (dict, argc < 2 ? "" : argv[1]);
   for (cur = wl; NULL != cur; cur =  cur->next)
