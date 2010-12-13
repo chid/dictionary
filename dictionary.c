@@ -34,9 +34,27 @@ void dictListN(struct dictEdge* root,char* word) {
     return;
 
   // word
+  if (root->isTerminal == True) {
+    printf("ISTERMINAL PRINTING OUT WORD\n");
+    printf("%s\n",word);
+  }
+  dictListN(root->sibling,word);
+  if (word == NULL) {
+    word = malloc(sizeof(char)*2);
+    // *word = sprintf("%c\0",root->thisChar);
+    word[0] = root->thisChar;
+    // printf(">%c<",root->thisChar);
+    word[1] = 0;
+  } else {
+    int i = strlen(word) + 2; // the array size is strlen(word)+1
+    word = realloc (word, sizeof(char)*(strlen(word)+2));
+    word[i-1] = root->thisChar;
+    printf("ATTEMPTING TO REALLOC for >%c<",root->thisChar);
+    // add the char to the end of word, and/or move the pointer:)
+  }
   printf("%c ",root->thisChar);
-  dictTrav(root->child);
-  dictTrav(root->sibling);
+  dictListN(root->child,word);
+  
 }
 
 // just to test out a few algorithms.
