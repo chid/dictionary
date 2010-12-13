@@ -86,6 +86,10 @@ printf("testing, completions\n");
 
 printf("COMPLETIONS\n");
   }
+ /* 
+  struct wlnode* b = wlIns(NULL,"HIHIHI");
+  struct wlnode* a = dictToWl(dict->root,NULL,0,b);
+  printwl(a);return; */
   //printDict(dict);return;
   printEdge(dict->root,0);return;
   // change string to get different results:

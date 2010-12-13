@@ -199,7 +199,9 @@ void printEdge(struct dictEdge* dnode, long n) { // attempt to create a PreOrde
     //printf("TERMIN");
     printf("\033[1;33m%c\033[m\n",dnode->thisChar);
   } else {
-    printf("%c.%d\n",dnode->thisChar,n);
+    //printf("%c.%d\n",dnode->thisChar,n);
+    printf("%c\n",dnode->thisChar);
+
   }
   /*
   if (dnode->thisChar == '\0') {
