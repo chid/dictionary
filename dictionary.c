@@ -28,8 +28,8 @@ void
 dictList(struct dictionary* dict);
 void 
 dictListN(struct dictEdge* root,char* word,int level);
-void
-dictToWl(struct dictEdge* root,char* word,int level);
+struct wlnode*
+dictToWl(struct dictEdge* root,char* word,int level,struct wlnode* head);
 void 
 dictList(struct dictionary* dict) {
   dictListN(dict->root,NULL,0);
@@ -37,7 +37,7 @@ dictList(struct dictionary* dict) {
 void dictListN(struct dictEdge* root,char* word,int level) {
   if (root == NULL)
     return;
- // printf("%p\n",root);
+  printf("%p\n",root);
   // word
   /*
   if (root->isTerminal == True) {
@@ -71,74 +71,38 @@ void dictListN(struct dictEdge* root,char* word,int level) {
   }
   dictListN(root->child,word,level+1);
 }
+
 
 struct wlnode* 
 wlIns(struct wlnode* head,char* word);
-void
-dictToWl2(struct dictEdge* root,char* word,int level,struct wlnode* head) {
+struct wlnode*
+dictToWl(struct dictEdge* root,char* word,int level,struct wlnode* head) {
   if (root == NULL || root == 0x19) {
-    printf("%p\n",root);
     return;
   }
-  printf("REC\n");
+
   if (word == NULL) {
     word = malloc(sizeof(char)*2);
     word[0] = root->thisChar;
-    word[1] = 0;
-  } else {
-    int i = level + 2; // the array size is strlen(word)+1
-    word = realloc (word, sizeof(char)*(i));
-    word[i-1] = 0;
-//    word[i-2] = root->thisChar;
-  }
-  printf("%p\n",root);
-  if (root->isTerminal == True) {
-    head = wlIns(head,word);
-  }
-  dictToWl2(root->child,word,level+1,head);
-  dictToWl2(root->sibling,word,level,head);
-}
-// just to test out a few algorithms.
-
-void
-dictToWl(struct dictEdge* root,char* word,int level) {
-/* lame */
-  if (root == NULL)
-    return;
-  printf("%p\n",root);
-  // word
-  /*
-  if (root->isTerminal == True) {
-    printf("ISTERMINAL PRINTING OUT WORD len(%d)\n",strlen(word));
-    printf("%s\n",word);
-  } */
-
-  dictListN(root->sibling,word,level);
- // if (root->thisChar == 0)
- // return; 
-  assert(root->thisChar != '\0');
-
-  if (word == NULL) {
-    word = malloc(sizeof(char)*2);
-    // *word = sprintf("%c\0",root->thisChar);
-    word[0] = root->thisChar;
-    // printf(">%c<",root->thisChar);
     word[1] = 0;
   } else {
     int i = level + 2; // the array size is strlen(word)+1
     word = realloc (word, sizeof(char)*(i));
     word[i-1] = 0;
     word[i-2] = root->thisChar;
-//    printf("ATTEMPTING TO REALLOC for >%c<",root->thisChar);
-    // add the char to the end of word, and/or move the pointer:)
-    // printf("%d vs %d\n",i,strlen(word));
   }
   if (root->isTerminal == True) {
-    printf("ISTERMINAL PRINTING OUT WORD len(%d)\n",strlen(word));
-    printf("%s\n",word);
+    printf("adding word %s\n",word);
+    head = wlIns(head,word);
   }
-  dictListN(root->child,word,level+1);
+  dictToWl(root->child,word,level+1,head);
+  dictToWl(root->sibling,word,level,head);
+  return head;
 }
+// just to test out a few algorithms.
+
+struct wlnode* 
+wlIns(struct wlnode* head,char* word);
 
 
 void 
