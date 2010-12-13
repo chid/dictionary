@@ -7,6 +7,7 @@
 
 int main (int argc, char** argv)
 {
+#ifdef DEBUG
   struct dictionary* dict = dictInit();
   printf("%p", &dict);
   printDict(dict);
@@ -63,8 +64,9 @@ printf("testing, completions\n");
   printwl(distCompletions(dict,"N"));
   // dictList(dict);
   // n is for internal
-
-#if 0
+#endif
+#define REL
+#ifdef REL 
   // allocate WORDMAX + 2: 1 for new-line character, 1 for NUL-terminator.
   char     word[WORDMAX + 2];
   int      len;
@@ -81,10 +83,11 @@ printf("testing, completions\n");
       word[--len] = '\0';
     if (len > 0)
       dictInsertWord (dict, word);
-  }
 
+printf("COMPLETIONS\n");
+  }
   // change string to get different results:
-  wl = dictCompletions (dict, argc < 2 ? "" : argv[1]);
+  wl = distCompletions (dict, argc < 2 ? "" : argv[1]);
   for (cur = wl; NULL != cur; cur =  cur->next)
     fprintf (stdout, "%s\n", cur->word);
 
@@ -93,9 +96,9 @@ printf("testing, completions\n");
   {
     // save cur->next into tmp before we free cur.
     tmp = cur->next;
-
+/*
     free (cur->word);
-    free (cur);
+    free (cur); */
   }
 
   dictFree (dict);

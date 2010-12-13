@@ -134,10 +134,10 @@ distCompletionsN (struct dictEdge* root,char* word,char *store,
     store[i-2] = root->thisChar;
   }
   if (root->isTerminal == True) {
-//    printf("adding word %s\n",word);
+    printf("adding store %s\n",store);
     char *str = malloc(sizeof(char)*(level + 2));
     strcpy(str,store);
-    printf("adding word %s\n",str);
+    printf("adding str %s\n",str);
     head = wlIns(head,str);
   }
   if (level < strlen(word) && word[level] == root->thisChar) {
@@ -324,7 +324,9 @@ void insertWordR (struct dictEdge * node, char* word) {
       }
       else {
         printf("->>%s\n",word);
-        if (word[1] == '\0') { printf("WHY ISN'T THIS WORKING");rover->isTerminal = True; }
+        if (word[1] == '\0') { 
+           printf("WHY ISN'T THIS WORKING");rover->isTerminal = True; 
+        }
          else {
            rover->child = dictEdgeNew(word[1]);
            insertWordR(rover->child,&word[1]);
