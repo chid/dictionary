@@ -75,16 +75,16 @@ printf("testing, completions\n");
   struct wlnode* tmp;
 
   struct dictionary* dict = dictInit ();
-
+  struct wlnode* test = NULL;
   while (fgets (word, sizeof(word), stdin))
-  {
+  { 
     len = strlen (word);
     if (len > 0 && '\n' == word[len - 1])
       word[--len] = '\0';
-    if (len > 0)
+    if (len > 0) {
       dictInsertWord (dict, word);
+test = wlIns(test,word); }
 
-printf("COMPLETIONS\n");
   }
  /* 
   struct wlnode* b = wlIns(NULL,"HIHIHI");
@@ -93,10 +93,12 @@ printf("COMPLETIONS\n");
   //printDict(dict);return;
  //  printEdge(dict->root,0);return;
   // change string to get different results:
+//  printwl(test);
   wl = dictCompletions (dict, argc < 2 ? "" : argv[1]);
+  //return;
   for (cur = wl; NULL != cur; cur =  cur->next)
     fprintf (stdout, "%s\n", cur->word);
-
+  //return;
   // free the memory returned by dictCompletions ()
   for (cur = wl; NULL != cur; cur = tmp)
   {
