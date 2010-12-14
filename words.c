@@ -25,6 +25,7 @@ wl = wlIns(wl,"124819241");
 wl = wlIns(wl,"1231241211");
 wl = wlIns(wl,"1235"); // this breaks :(
 wl = wlIns(wl,"125"); 
+wl = wlIns(wl,"comm"); 
 /* 
 char* word = "word";
 wl = wlIns(wl,word);

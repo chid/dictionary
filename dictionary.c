@@ -290,11 +290,14 @@ void insertWordR (struct dictEdge * node, char* word) {
   } */
   // FIX
   // Forgot about insert in order
+  /*
   if (word[0] == 0) {
     // terminating
+    printf("a triggering\n");
     node->isTerminal = True;
     return;
   }
+  */
   printf("input string-> %s\n",word);
   char first = word[0];
   bool found = False;
@@ -348,14 +351,22 @@ void insertWordR (struct dictEdge * node, char* word) {
     else {
       // looks like a bug here;
       if (rover->child != NULL) {
-        insertWordR(rover->child,&word[1]);
+
+        if (word[1] == '\0') { 
+           rover->isTerminal = True; 
+        }
+        else {
+          insertWordR(rover->child,&word[1]); 
+        }
       }
       else {
         printf("->>%s\n",word);
         if (word[1] == '\0') { 
-           printf("WHY ISN'T THIS WORKING");rover->isTerminal = True; 
+           printf("WHY ISN'T THIS WORKING");
+           return;
+           rover->isTerminal = True;
         }
-         else {
+        else {
            rover->child = dictEdgeNew(word[1]);
            insertWordR(rover->child,&word[1]);
         }
