@@ -363,7 +363,7 @@ void insertWordR (struct dictEdge * node, char* word) {
         printf("->>%s\n",word);
         if (word[1] == '\0') { 
            printf("WHY ISN'T THIS WORKING");
-           return;
+           //return;
            rover->isTerminal = True;
         }
         else {
