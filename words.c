@@ -23,16 +23,26 @@ wl = wlIns(wl,"1235678");
 wl = wlIns(wl,"12416819");
 wl = wlIns(wl,"124819241");
 wl = wlIns(wl,"1231241211");
+wl = wlIns(wl,"1235"); // this breaks :(
+wl = wlIns(wl,"125"); 
+/* 
 char* word = "word";
 wl = wlIns(wl,word);
-printwl(wl);
-
-wlfree(wl);
+*/
+//printwl(wl);
+struct dictionary* dict = dictInit();
+dictInsertWords(dict,wl);
+printDict(dict);
+dictFree(dict);
+// printwl(dictCompletions(dict,"comm"));
+// wlfree(wl);
 return 0;
+#if 0
 struct dictionary* dict = dictInit();
 dictInsertWords(dict,wl);
 printwl(dictCompletions(dict,"comm"));
   return 0;
+#endif
 #ifdef DEBUG
   struct dictionary* dict = dictInit();
   printf("%p", &dict);

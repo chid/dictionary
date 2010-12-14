@@ -14,3 +14,11 @@ try use ANSI CODES for bold to indicate ends of words :)
 I have written a function to print all the list words ;)
 // not sure about analysing the complexity...
 but yeah, it just pretty much does extract(root,"");
+
+
+
+
+
+Tue Dec 14 23:40:03 EST 2010
+well, I figured out what output bugged it and put it into the main ;)
+and slowly testing all the functions

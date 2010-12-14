@@ -189,7 +189,10 @@ dictInit () {
   return ndict;
 }
 
+void printEdge(struct dictEdge* dnode, long n);
 void printDict(struct dictionary* dict) {
+  printEdge(dict->root,0);
+  return;
   printf("%p",&dict);
   if (dict->root == NULL) {
     return;
@@ -532,7 +535,8 @@ wlIns (struct wlnode* wl, char* word) {
   else {
     struct wlnode* rover = wl;
     // assert(rover != NULL);
-    printwl(rover);
+//    printwl(rover);
+// dcollien what's wrong with this line?
     while (rover->next != NULL) {
       rover = rover->next;
     }
@@ -561,5 +565,6 @@ wlfree (struct wlnode* wl) {
   wlfree(wl->next);
 //  free(wl->word);
 // why don't I have to free the pointer to the word?
+  // free(wl->word);
   free(wl);
 }
