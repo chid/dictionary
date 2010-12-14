@@ -236,6 +236,7 @@ void printEdge(struct dictEdge* dnode, long n) { // attempt to create a PreOrde
 struct dictEdge* dictEdgeNew(char thisChar) {
   struct dictEdge *ndictEdge = malloc(sizeof(struct dictEdge));
   assert(ndictEdge != NULL);
+
   ndictEdge->thisChar = thisChar;
   ndictEdge->child = NULL;
   ndictEdge->sibling = NULL;
@@ -459,9 +460,14 @@ dictCompletions (struct dictionary* dict, char* word) {
 /* testing functions for the above */
 void
 printwl (struct wlnode* wl) {
+  /*
    struct wlnode * cur;
    for (cur = wl; NULL != cur; cur =  cur->next)
       fprintf (stdout, "%s\n", cur->word);
+      */
+   struct wlnode * cur;
+   for (cur = wl; NULL != cur; cur =  cur->next)
+      fprintf (stdout, "%s %p\n", cur->word, &cur->word);
 }
 
 
@@ -515,6 +521,7 @@ dictGetRoot (struct dictionary* dict) {
 struct wlnode* 
 wlIns (struct wlnode* wl, char* word) {
   // I am a singularly linked list
+  printf("inserting word %s\n",word);
   if (wl == NULL) {
     struct wlnode* new = malloc(sizeof(struct wlnode));
     assert(new != NULL);
@@ -524,6 +531,8 @@ wlIns (struct wlnode* wl, char* word) {
   }
   else {
     struct wlnode* rover = wl;
+    // assert(rover != NULL);
+    printwl(rover);
     while (rover->next != NULL) {
       rover = rover->next;
     }
@@ -543,3 +552,14 @@ wlPrint (struct wlnode* wl) {
     wl = wl->next;
   }
 } */ // silly me :(
+
+void
+wlfree (struct wlnode* wl) {
+  if (wl == NULL) {
+    return;
+  }
+  wlfree(wl->next);
+//  free(wl->word);
+// why don't I have to free the pointer to the word?
+  free(wl);
+}

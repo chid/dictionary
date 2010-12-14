@@ -7,6 +7,32 @@
 
 int main (int argc, char** argv)
 {
+struct wlnode* wl = NULL;
+wl = wlIns(wl,"comma");
+wl = wlIns(wl,"commande");
+wl = wlIns(wl,"commandeer");
+wl = wlIns(wl,"commandeergIng");
+wl = wlIns(wl,"13456789013");
+wl = wlIns(wl,"apple");
+wl = wlIns(wl,"apt");
+wl = wlIns(wl,"ape");
+wl = wlIns(wl,"sillyc");
+wl = wlIns(wl,"1");
+wl = wlIns(wl,"12");
+wl = wlIns(wl,"1235678");
+wl = wlIns(wl,"12416819");
+wl = wlIns(wl,"124819241");
+wl = wlIns(wl,"1231241211");
+char* word = "word";
+wl = wlIns(wl,word);
+printwl(wl);
+
+wlfree(wl);
+return 0;
+struct dictionary* dict = dictInit();
+dictInsertWords(dict,wl);
+printwl(dictCompletions(dict,"comm"));
+  return 0;
 #ifdef DEBUG
   struct dictionary* dict = dictInit();
   printf("%p", &dict);
@@ -17,7 +43,21 @@ int main (int argc, char** argv)
   dictInsertWord(dict,"Done");
   dictInsertWord(dict,"TEnt");
   dictInsertWord(dict,"TE");// broken
-  printf("\n");
+  printf(wl = wlIns(wl,"comma");
+wl = wlIns(wl,"commande");
+wl = wlIns(wl,"commandeer");
+wl = wlIns(wl,"commandeergIng");
+wl = wlIns(wl,"13456789013");
+wl = wlIns(wl,"apple");
+wl = wlIns(wl,"apt");
+wl = wlIns(wl,"ape");
+wl = wlIns(wl,"sillyc");
+wl = wlIns(wl,"1");
+wl = wlIns(wl,"12");
+wl = wlIns(wl,"1235678");
+wl = wlIns(wl,"12416819");
+wl = wlIns(wl,"124819241");
+wl = wlIns(wl,"1231241211");"\n");
 printEdge(dict->root,0);
 dictFree(dict);
 dict = dictInit();
@@ -65,7 +105,7 @@ printf("testing, completions\n");
   // dictList(dict);
   // n is for internal
 #endif
-#define REL
+// #define REL
 #ifdef REL 
   // allocate WORDMAX + 2: 1 for new-line character, 1 for NUL-terminator.
   char     word[WORDMAX + 2];
