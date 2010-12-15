@@ -151,7 +151,7 @@ distCompletionsN (struct dictEdge* root,char* word,char *store,
     char *str = malloc(sizeof(char)*(level + 2));
     assert(str != NULL);
     strcpy(str,store);
-    printf("adding str %s len: %d\n",str,strlen(str));
+    printf("adding str %s %p len: %d\n",str,str,strlen(str));
     head = wlIns(head,str);
   }
   if (level < strlen(word) && word[level] == root->thisChar) {
@@ -480,8 +480,16 @@ printwl (struct wlnode* wl) {
       fprintf (stdout, "%s\n", cur->word);
       */
    struct wlnode * cur;
-   for (cur = wl; NULL != cur; cur =  cur->next)
-      fprintf (stdout, "%s %p\n", cur->word, &cur->word);
+   cur = wl;
+   //while (cur != NULL && cur != 0x65646e61) {
+   while (cur != NULL) { 
+       cur = cur->next;
+       printf("cur %p\n",cur);
+   }
+   //return;
+   //for (cur = wl; NULL != cur && cur != 0x65646e61; cur = cur->next)
+   for (cur = wl; NULL != cur; cur = cur->next)
+      fprintf (stdout, "%s %p\n", cur->word, cur->word);
 }
 
 
@@ -535,7 +543,7 @@ dictGetRoot (struct dictionary* dict) {
 struct wlnode* 
 wlIns (struct wlnode* wl, char* word) {
   // I am a singularly linked list
-  printf("inserting word %s\n",word);
+  printf("inserting word %s %p\n",word,word);
   if (wl == NULL) {
     struct wlnode* new = malloc(sizeof(struct wlnode));
     assert(new != NULL);
@@ -553,6 +561,7 @@ wlIns (struct wlnode* wl, char* word) {
     }
     struct wlnode* new = malloc(sizeof(struct wlnode));
     rover->next = new;
+    new->next = NULL;
     new->word = word;
     assert(new != NULL);
     return wl;
