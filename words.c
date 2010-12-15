@@ -27,6 +27,10 @@ wl = wlIns(wl,"1235"); // this breaks :(
 wl = wlIns(wl,"125"); 
 wl = wlIns(wl,"comm"); 
 wl = wlIns(wl,"sell"); 
+//wl = wlIns(wl,"commandinger's"); 
+wl = wlIns(wl,"commandinger1237128937129873hirs"); 
+wl = wlIns(wl, "commaaaa");
+wl =wlIns(wl,"short");
 /* 
 char* word = "word";
 wl = wlIns(wl,word);
@@ -35,9 +39,11 @@ wl = wlIns(wl,word);
 struct dictionary* dict = dictInit();
 dictInsertWords(dict,wl);
 printDict(dict);
-printwl(dictCompletions(dict,"comm"));
+printwl(dictCompletions(dict,"13")); return 0;
+printwl(dictCompletions(dict,"sil"));
+printwl(dictCompletions(dict,"s"));
+printwl(dictCompletions(dict,"comma"));
 dictFree(dict);
-// printwl(dictCompletions(dict,"comm"));
 // wlfree(wl);
 return 0;
 #if 0

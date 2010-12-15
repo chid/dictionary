@@ -49,7 +49,8 @@ void dictListN(struct dictEdge* root,char* word,int level) {
   assert(root->thisChar != '\0');
 
   if (word == NULL) {
-    word = malloc(sizeof(char)*2);
+//    word = malloc(sizeof(char)*2);
+    word = malloc(sizeof(char)*82);
     assert(word != NULL);
     // *word = sprintf("%c\0",root->thisChar);
     word[0] = root->thisChar;
@@ -57,7 +58,7 @@ void dictListN(struct dictEdge* root,char* word,int level) {
     word[1] = 0;
   } else {
     int i = level + 2; // the array size is strlen(word)+1
-    word = realloc (word, sizeof(char)*(i));
+//    word = realloc (word, sizeof(char)*(i));
     word[i-1] = 0;
     word[i-2] = root->thisChar;
 //    printf("ATTEMPTING TO REALLOC for >%c<",root->thisChar);
@@ -128,17 +129,26 @@ distCompletionsN (struct dictEdge* root,char* word,char *store,
     return;
   }
   if (store == NULL) {
-    store = malloc(sizeof(char)*2);
+    //store = malloc(sizeof(char)*2);
+    store = malloc(sizeof(char)*82);
     assert(store != NULL);
     store[0] = root->thisChar;
     store[1] = 0;
   } else {
     int i = level + 2; // the array size is strlen(word)+1
-    store = realloc (store, sizeof(char)*(i));
+    //store = realloc (store, sizeof(char)*(i));
     store[i-1] = 0;
     store[i-2] = root->thisChar;
   }
   // FIX
+  if (root->isTerminal == True) {
+    if (strlen(word) - 1 == level) {
+      if (word[level] == root->thisChar) {
+        head = wlIns(head,word);
+      }
+    }
+  }
+
   if (root->isTerminal == True) {
     if (strlen(word) - level == 1 && word[level] == root->thisChar) {
       printf("maybe I should add %s level: %d\n",word,level);
@@ -147,6 +157,9 @@ distCompletionsN (struct dictEdge* root,char* word,char *store,
   if (root->isTerminal == True 
     && (word[level] == root->thisChar || level >= strlen(word))
     && (level >= strlen(word) )) { 
+    if (strlen(store) == 0) {
+      return;
+    }
     printf("adding store %s\n",store);
     char *str = malloc(sizeof(char)*(level + 2));
     assert(str != NULL);
