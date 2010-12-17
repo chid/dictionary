@@ -122,8 +122,10 @@ distCompletionsN (struct dictEdge* root,char* word,char *store,
 struct wlnode*
 distCompletions (struct dictionary* dict,char* word) {
   struct wlnode* a = wlIns(NULL,"hi angel");
-  distCompletionsN(dict->root,word,NULL,0,a);
-  return a;
+  char store[82];
+  distCompletionsN(dict->root,word,store,0,a);
+//  return a;
+// if I want to see where the gap is between words
   struct wlnode* re = a->next;
   a->next = NULL;
   free(a);
@@ -135,6 +137,7 @@ distCompletionsN (struct dictEdge* root,char* word,char *store,
   int level, struct wlnode* head) {
 //  if (root == NULL || root == 0x19) { // for some reason this works
   if (root == NULL) {
+    // free(store);
     return;
   }
   if (store == NULL) {
@@ -167,6 +170,7 @@ distCompletionsN (struct dictEdge* root,char* word,char *store,
     && (word[level] == root->thisChar || level >= strlen(word))
     && (level >= strlen(word) )) { 
     if (strlen(store) == 0) {
+      // free(store);
       return;
 //      this looks like a bug
     }
@@ -349,7 +353,7 @@ insertWordR (struct dictEdge * node, char* word) {
   if (word[0] != '\0') {
     struct dictEdge* rover = node;
   
-    if (rover->thisChar > word[0]) {
+    if (node->thisChar > word[0]) {
       perr("we have a fucking problem");
       assert(1 == 0);
     }
@@ -371,7 +375,9 @@ insertWordR (struct dictEdge * node, char* word) {
         if (word[1] == 0) {
           newp->isTerminal = True;
         } else {       
-          insertWordR(newp,&word[1]);
+          struct dictEdge* newcp = dictEdgeNew(word[1]);
+          newp->child = newcp;
+          insertWordR(newcp,&word[1]);
         }
         return;
 
@@ -426,6 +432,13 @@ insertWordR (struct dictEdge * node, char* word) {
            rover->isTerminal = True; 
         }
         else {
+          // new FIX
+          if (rover->child->thisChar > word[1]) {
+            // we need to create
+            struct dictEdge* newp = dictEdgeNew(word[1]);
+            newp->sibling = rover->child;
+            rover->child = newp;
+          }
           insertWordR(rover->child,&word[1]); 
         }
       }

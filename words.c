@@ -136,7 +136,7 @@ printf("testing, completions\n");
   struct wlnode* tmp;
 
   struct dictionary* dict = dictInit ();
-  struct wlnode* test = NULL;
+ // struct wlnode* test = NULL;
   while (fgets (word, sizeof(word), stdin))
   { 
     len = strlen (word);
@@ -144,8 +144,8 @@ printf("testing, completions\n");
       word[--len] = '\0';
     if (len > 0) {
       dictInsertWord (dict, word);
-test = wlIns(test,word); }
-
+  //    test = wlIns(test,word); 
+  }
   }
  /* 
   struct wlnode* b = wlIns(NULL,"HIHIHI");
@@ -165,12 +165,11 @@ test = wlIns(test,word); }
   {
     // save cur->next into tmp before we free cur.
     tmp = cur->next;
-/*
     free (cur->word);
-    free (cur); */
+    free (cur);
   }
 
-//  dictFree (dict);
+  dictFree (dict);
 #endif
   return EXIT_SUCCESS;
 }
