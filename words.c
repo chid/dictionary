@@ -7,6 +7,7 @@
 
 int main (int argc, char** argv)
 {
+  #if 0
 struct wlnode* wl = NULL;
 wl = wlIns(wl,"comma");
 wl = wlIns(wl,"commande");
@@ -124,7 +125,8 @@ printf("testing, completions\n");
   // dictList(dict);
   // n is for internal
 #endif
-// #define REL
+#endif
+#define REL
 #ifdef REL 
   // allocate WORDMAX + 2: 1 for new-line character, 1 for NUL-terminator.
   char     word[WORDMAX + 2];
