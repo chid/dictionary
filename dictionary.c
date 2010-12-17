@@ -12,6 +12,15 @@ struct wlnode
 
 /* Initialise the dictionary structure
  */
+
+void 
+perr(char error[]) {
+#define DEBUGP
+#ifdef DEBUGP
+  fprintf(stderr,"%s\n",error);
+#endif
+}
+
 void dictTrav(struct dictEdge* root);
 void dictTrav(struct dictEdge* root) {
   // recursive first.
@@ -159,6 +168,7 @@ distCompletionsN (struct dictEdge* root,char* word,char *store,
     && (level >= strlen(word) )) { 
     if (strlen(store) == 0) {
       return;
+//      this looks like a bug
     }
     printf("adding store %s\n",store);
     char *str = malloc(sizeof(char)*(level + 2));
@@ -173,6 +183,7 @@ distCompletionsN (struct dictEdge* root,char* word,char *store,
   } else if (level >=strlen(word)) {
     // printf("here");
     distCompletionsN (root->child,word,store,level+1,head);
+    // since I add child first, it is in ORDER :)
     distCompletionsN (root->sibling,word,store,level,head);
   } else {
     distCompletionsN (root->sibling,word,store,level,head);
@@ -276,6 +287,19 @@ dictInsertWord (struct dictionary* dict, char* word) {
   if (dict->root == NULL) {
     dict->root = dictEdgeNew(word[0]);
   }
+
+  // oh my FUCK this is icky
+  if (dict->root->thisChar > word[0]) {
+    perr("noes :( fixing node");
+    struct dictEdge* newp = dictEdgeNew(word[0]);
+    newp->sibling = dict->root;
+    dict->root = newp;
+  }
+  else {
+    //perr("yays ;)");
+  }
+  printf("comparing %d with %d\n",dict->root->thisChar,word[0]);
+  //printf("OH MY GOSH FUCK YOU");
 
   insertWordR (dict->root, word); 
   return;

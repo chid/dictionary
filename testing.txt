@@ -22,3 +22,29 @@ but yeah, it just pretty much does extract(root,"");
 Tue Dec 14 23:40:03 EST 2010
 well, I figured out what output bugged it and put it into the main ;)
 and slowly testing all the functions
+
+
+
+Fri Dec 17 14:50:10 EST 2010
+To test the fact that the nodes are inserted in Order
+
+alpha
+beta
+delta
+cat
+
+should output
+alpha
+beta
+cat
+delta
+
+Fri Dec 17 15:05:25 EST 2010
+in order to test the change of root part :)
+using the input 
+beta
+alpha
+delta
+cat
+
+should print same as above :)
