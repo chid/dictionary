@@ -318,8 +318,12 @@ dictInsertWord (struct dictionary* dict, char* word) {
   }
 }
 
-void insertWordR (struct dictEdge * node, char* word) {
+void 
+insertWordR (struct dictEdge * node, char* word) {
   assert(node != NULL);
+// oh I remember again, to prevent against sloppy code ;)
+// passing a null edge is silly
+
 // forgot why I had this assertion :$
 /*
   if (word[1] == 0) {
@@ -340,18 +344,48 @@ void insertWordR (struct dictEdge * node, char* word) {
   bool found = False;
   
   struct dictEdge* rover = node;
+  struct dictEdge* roverPapa = NULL;
   //stopping case, word[0] == \0
   if (word[0] != '\0') {
     struct dictEdge* rover = node;
+  
+    if (rover->thisChar > word[0]) {
+      perr("we have a fucking problem");
+      assert(1 == 0);
+    }
+
     while (rover != NULL && !found) {
       // we search until we find a match or not
+      
+// new
+      if (rover->thisChar > word[0]) {
+        // ie it's not in the list, since we assume it's ordered
+
+        // insert it in order
+        assert(roverPapa != NULL);
+        struct dictEdge* newp = dictEdgeNew(word[0]);
+        roverPapa->sibling = newp;
+        newp->sibling = rover;
+        
+        // recurse.
+        if (word[1] == 0) {
+          newp->isTerminal = True;
+        } else {       
+          insertWordR(newp,&word[1]);
+        }
+        return;
+
+      }
+
       if (rover->thisChar == first) {
         found = True;
         // printf("FOUND YAY");
       } else {
-      rover = rover->sibling; }
+        roverPapa = rover;
+        rover = rover->sibling;
+      }
     }
-    if (found == False) {
+    if (found == False) { // not found :)
       printf("not found with arg %s\n",word);
       // just add the whole word in.
       rover = node; 
@@ -376,7 +410,7 @@ void insertWordR (struct dictEdge * node, char* word) {
        if (word[i] == '\0') {
           rover->child->isTerminal = True;
         }
-  }
+      }
   if (i == 1) { // bug fix.
     // we didn't enter loop
     // then the node is the final element
@@ -388,7 +422,6 @@ void insertWordR (struct dictEdge * node, char* word) {
     else {
       // looks like a bug here;
       if (rover->child != NULL) {
-
         if (word[1] == '\0') { 
            rover->isTerminal = True; 
         }
@@ -399,7 +432,7 @@ void insertWordR (struct dictEdge * node, char* word) {
       else {
         printf("->>%s\n",word);
         if (word[1] == '\0') { 
-           printf("WHY ISN'T THIS WORKING");
+//         printf("WHY ISN'T THIS WORKING");
            //return;
            rover->isTerminal = True;
         }
@@ -410,7 +443,6 @@ void insertWordR (struct dictEdge * node, char* word) {
       }
     }
   }
-
  return;
   int i = 0;
   //struct dictEdge* rover = node;
