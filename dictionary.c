@@ -1,14 +1,8 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <dictionary.h>
+#include "dictionary.h"
 #include <string.h>
-/*
-struct wlnode
-{
-  char* word;
-  struct wlnode * next;
-};  */
 
 /* Initialise the dictionary structure
  */
@@ -21,6 +15,11 @@ perr(char error[]) {
 #endif
 }
 
+
+/* 
+  unused functions
+  used as a basis for the final functions :)
+    */
 void dictTrav(struct dictEdge* root);
 void dictTrav(struct dictEdge* root) {
   // recursive first.
@@ -81,6 +80,7 @@ void dictListN(struct dictEdge* root,char* word,int level) {
   dictListN(root->child,word,level+1);
 }
 
+/* begining of true functions */
 
 struct wlnode* 
 wlIns(struct wlnode* head,char* word);
@@ -112,7 +112,7 @@ dictToWl(struct dictEdge* root,char* word,int level,struct wlnode* head) {
   dictToWl(root->sibling,word,level,head);
   return head;
 }
-
+// oop, typo :)
 struct wlnode*
 distCompletions (struct dictionary* dict,char* word);
 void
@@ -156,7 +156,12 @@ distCompletionsN (struct dictEdge* root,char* word,char *store,
   if (root->isTerminal == True) {
     if (strlen(word) - 1 == level) {
       if (word[level] == root->thisChar) {
-        head = wlIns(head,word);
+        // oh my. this is a bug :)
+        char *str = malloc(sizeof(char)*(level + 2));
+        assert(str != NULL);
+        strcpy(str,store);
+        //head = wlIns(head,str);
+        head = wlIns(head,str);
       }
     }
   }
@@ -171,6 +176,7 @@ distCompletionsN (struct dictEdge* root,char* word,char *store,
     && (level >= strlen(word) )) { 
     if (strlen(store) == 0) {
       // free(store);
+      assert(1 != 0);
       return;
 //      this looks like a bug
     }
@@ -347,7 +353,6 @@ insertWordR (struct dictEdge * node, char* word) {
   char first = word[0];
   bool found = False;
   
-  struct dictEdge* rover = node;
   struct dictEdge* roverPapa = NULL;
   //stopping case, word[0] == \0
   if (word[0] != '\0') {
@@ -398,34 +403,33 @@ insertWordR (struct dictEdge * node, char* word) {
       while (rover->sibling != NULL) {
         rover = rover->sibling;
       }
-     rover->sibling = dictEdgeNew(word[0]);
-     node = rover->sibling;
+      rover->sibling = dictEdgeNew(word[0]);
+      node = rover->sibling;
 
       int i = 1;
       while (word[i] != 0) {
-       struct dictEdge* rover = node;
+        struct dictEdge* rover = node;
         int j;
         for (j=0;j<i-1;j++) {
-           assert(rover->child != NULL);
-           rover = rover->child;
+          assert(rover->child != NULL);
+          rover = rover->child;
         }
         rover->child = dictEdgeNew(word[i]);      
      //  printf("new child pointing to %p\n",rover->child);
       //dict->rootword[i];
-        ++i;
-       if (word[i] == '\0') {
-          rover->child->isTerminal = True;
-        }
-      }
-  if (i == 1) { // bug fix.
+         ++i;
+         if (word[i] == '\0') {
+           rover->child->isTerminal = True;
+       }
+       if (i == 1) { // bug fix.
     // we didn't enter loop
     // then the node is the final element
-    node->isTerminal = True;
-  }
+         node->isTerminal = True;
+         } // seems to make sense to put this at the front :) 
+       }
 
-}
-   
-    else {
+     }
+     else {
       // looks like a bug here;
       if (rover->child != NULL) {
         if (word[1] == '\0') { 
@@ -457,18 +461,6 @@ insertWordR (struct dictEdge * node, char* word) {
     }
   }
  return;
-  int i = 0;
-  //struct dictEdge* rover = node;
-  while (word[i] != 0) {
-    rover = node;
-    while (rover->child != NULL) {
-     rover = rover->child;
-    }
-   rover->child = dictEdgeNew(word[i]);
-    printf("new child pointing to %p\n",rover->child);
-   //dict->rootword[i];
-    ++i;
-  }
 }
 
 /* Insert a list of words into the dictionary 

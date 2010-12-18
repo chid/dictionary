@@ -14,7 +14,7 @@ typedef enum
 }
 bool;
 
-#include <dictionary_type.h>
+#include "dictionary_type.h"
 /* Linked list of words
  */	
 

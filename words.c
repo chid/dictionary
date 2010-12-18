@@ -156,15 +156,18 @@ printf("testing, completions\n");
   // change string to get different results:
 //  printwl(test);
   wl = dictCompletions (dict, argc < 2 ? "" : argv[1]);
+  
   //return;
   for (cur = wl; NULL != cur; cur =  cur->next)
     fprintf (stdout, "%s\n", cur->word);
-  //return;
+  // return;
   // free the memory returned by dictCompletions ()
   for (cur = wl; NULL != cur; cur = tmp)
   {
     // save cur->next into tmp before we free cur.
     tmp = cur->next;
+    printf("freeing %p\n",&cur->word);
+    printf("freeing %p\n",cur->word);
     free (cur->word);
     free (cur);
   }
