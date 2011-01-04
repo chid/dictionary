@@ -97,7 +97,7 @@ dictToWl(struct dictEdge* root,char* word,int level,struct wlnode* head) {
     word[1] = 0;
   } else {
     int i = level + 2; // the array size is strlen(word)+1
-//    word = realloc (word, sizeof(char)*(i));
+    word = realloc (word, sizeof(char)*(i));
     word[i-1] = 0;
     word[i-2] = root->thisChar;
   }
@@ -119,38 +119,11 @@ void
 distCompletionsN (struct dictEdge* root,char* word,char *store,
   int level, struct wlnode* head);
 
-void
-dictToWlNew (struct dictEdge* root,char *store,
-  int level, struct wlnode* head) {
-  if (root == NULL) 
-    return;// terminating case :)
-  assert(store != NULL);
-  int i = level + 2; 
-  store[i-1] = 0;
-  store[i-2] = root->thisChar;
-  if (root->isTerminal == True) {
-    char *str = malloc(sizeof(char)*(level + 2));
-    assert(str != NULL);
-    strcpy(str,store);
-    wlIns(head,str);
-  } // do it in order :)
-  dictToWlNew (root->child,store,level+1,head);
-  dictToWlNew (root->sibling,store,level,head);
-}
-
 struct wlnode*
 distCompletions (struct dictionary* dict,char* word) {
-//  printf("strlen of word is %d\n",strlen(word));return;
-  struct wlnode* a = wlIns(NULL,"hi");
+  struct wlnode* a = wlIns(NULL,"hi angel");
   char store[82];
-  if (word[0] == 0) {
-    printf("doing old routine");
-    dictToWlNew(dict->root,store,0,a);
-  //  return a->next;
-  }
-  else {
-    distCompletionsN(dict->root,word,store,0,a);
-  }
+  distCompletionsN(dict->root,word,store,0,a);
 //  return a;
 // if I want to see where the gap is between words
   struct wlnode* re = a->next;
@@ -167,7 +140,6 @@ distCompletionsN (struct dictEdge* root,char* word,char *store,
     // free(store);
     return;
   }
-  assert(store != NULL);
   if (store == NULL) {
     //store = malloc(sizeof(char)*2);
     store = malloc(sizeof(char)*82);
@@ -210,12 +182,9 @@ distCompletionsN (struct dictEdge* root,char* word,char *store,
     }
     printf("adding store %s\n",store);
     char *str = malloc(sizeof(char)*(level + 2));
-/*    char test[level + 2];
-    char *str;
-    str = test; */ // this code doesn't seem to work at all :(
     assert(str != NULL);
     strcpy(str,store);
-//    printf("adding str %s %p len: %d\n",str,str,strlen(str));
+    printf("adding str %s %p len: %d\n",str,str,strlen(str));
     head = wlIns(head,str);
   }
   if (level < strlen(word) && word[level] == root->thisChar) {
