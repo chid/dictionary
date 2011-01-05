@@ -1,0 +1,11 @@
+void dictTrav(struct dictEdge* root);
+void dictTrav(struct dictEdge* root) {
+  // recursive first.
+  if (root == NULL)
+    return;
+  printf("%c ",root->thisChar);
+  dictTrav(root->child);
+  dictTrav(root->sibling);
+}
+i = 1 
+j = i++;
