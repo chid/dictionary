@@ -1,0 +1,3 @@
+#!/bin/sh
+export MUDFLAP_OPTIONS=-viol-abort
+gcc -o testmf words.c dictionary.c -g -Wall -fmudflap -lmudflap

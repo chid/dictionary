@@ -1,0 +1,13 @@
+input string-> oko
+->>oko
+input string-> ko
+->>ko
+input string-> o
+->>o
+WHY ISN'T THIS WORKINGinserting word oko 0xbf9131aa
+inserting word hi angel 0x80495e6
+adding store oko
+adding str oko 0x86360d8 len: 3
+inserting word oko 0x86360d8
+hi angel
+oko

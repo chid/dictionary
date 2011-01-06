@@ -20,7 +20,7 @@ perr(char error[]) {
   unused functions
   used as a basis for the final functions :)
     */
-
+#if 0
 void 
 dictList(struct dictionary* dict);
 
@@ -74,12 +74,14 @@ void dictListN(struct dictEdge* root,char* word,int level) {
   }
   dictListN(root->child,word,level+1);
 }
-
+#endif
 /* begining of true functions */
 
+// insert into slist and return the head
 struct wlnode* 
 wlIns(struct wlnode* head,char* word);
 
+// converts all the items in a dictionary into a linked list of words
 struct wlnode*
 dictToWl(struct dictEdge* root,char* word,int level,struct wlnode* head) {
   if (root == NULL) { // for some reason this works
@@ -115,19 +117,22 @@ void
 distCompletionsN (struct dictEdge* root,char* word,char *store,
   int level, struct wlnode* head);
 
+
+// this isn't that bad
 void
 dictToWlNew (struct dictEdge* root,char *store,
   int level, struct wlnode* head) {
   if (root == NULL) 
     return;// terminating case :)
-  assert(store != NULL);
+  assert(store != NULL); // store should be defined already
   int i = level + 2; 
   store[i-1] = 0;
   store[i-2] = root->thisChar;
   if (root->isTerminal == True) {
-    char *str = malloc(sizeof(char)*(level + 2));
-    assert(str != NULL);
-    strcpy(str,store);
+    char *str = malloc(sizeof(char)*(level + 2)); 
+    // space for new char + null
+    assert(str != NULL); // we have enough memory
+    strcpy(str,store); // copy everything
     wlIns(head,str);
   } // do it in order :)
   dictToWlNew (root->child,store,level+1,head);
@@ -139,7 +144,8 @@ distCompletions (struct dictionary* dict,char* word) {
 //  printf("strlen of word is %d\n",strlen(word));return;
   struct wlnode* a = wlIns(NULL,"hi");
   char store[82];
-  if (word[0] == 0) {
+  // this is stupid
+  if (word[0] == 0) { // meaning that the word is blank
     printf("doing old routine");
     dictToWlNew(dict->root,store,0,a);
   //  return a->next;
@@ -158,7 +164,6 @@ distCompletions (struct dictionary* dict,char* word) {
 void
 distCompletionsN (struct dictEdge* root,char* word,char *store,
   int level, struct wlnode* head) {
-//  if (root == NULL || root == 0x19) { // for some reason this works
   if (root == NULL) {
     // free(store);
     return;
@@ -295,6 +300,7 @@ dictEdgeNew(char thisChar) {
 void
 dictInsertWord (struct dictionary* dict, char* word) {
   // make sure I can actually do operations on the word.
+
 /*  printf("%d",strlen(word));
   int i = 0;
   while (word[i] != 0) {
@@ -307,34 +313,18 @@ dictInsertWord (struct dictionary* dict, char* word) {
     dict->root = dictEdgeNew(word[0]);
   }
 
-  // oh my FUCK this is icky
+  // oh my this is icky
+  // well, I suppose it's required though
   if (dict->root->thisChar > word[0]) {
     perr("noes :( fixing node");
     struct dictEdge* newp = dictEdgeNew(word[0]);
     newp->sibling = dict->root;
     dict->root = newp;
-  }
-  else {
-    //perr("yays ;)");
-  }
-  printf("comparing %d with %d\n",dict->root->thisChar,word[0]);
-  //printf("OH MY GOSH FUCK YOU");
-
+  } // TODO, make sure this won't leave any extra nodes
+//  printf("comparing %d with %d\n",dict->root->thisChar,word[0]);
+  assert(dict->root->thisChar <= word[0]);
   insertWordR (dict->root, word); 
-  return;
 
-  int i = 0;
-  struct dictEdge* rover = dict->root;
-  while (word[i] != 0) {
-    rover = dict->root;
-    while (rover->child != NULL) {
-      rover = rover->child;
-    }
-    rover->child = dictEdgeNew(word[i]);
-    printf("new child pointing to %p\n",rover->child);
-    //dict->rootword[i];
-    ++i;
-  }
 }
 
 void 
@@ -424,7 +414,6 @@ insertWordR (struct dictEdge * node, char* word) {
         }
         rover->child = dictEdgeNew(word[i]);      
      //  printf("new child pointing to %p\n",rover->child);
-      //dict->rootword[i];
          ++i;
          if (word[i] == '\0') {
            rover->child->isTerminal = True;

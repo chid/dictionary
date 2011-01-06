@@ -1,0 +1,15 @@
+wl = wlIns(wl,"comma");
+wl = wlIns(wl,"commande");
+wl = wlIns(wl,"commandeer");
+wl = wlIns(wl,"commandeergIng");
+wl = wlIns(wl,"13456789013");
+wl = wlIns(wl,"apple");
+wl = wlIns(wl,"apt");
+wl = wlIns(wl,"ape");
+wl = wlIns(wl,"sillyc");
+wl = wlIns(wl,"1");
+wl = wlIns(wl,"12");
+wl = wlIns(wl,"1235678");
+wl = wlIns(wl,"12416819");
+wl = wlIns(wl,"124819241");
+wl = wlIns(wl,"1231241211");

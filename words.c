@@ -134,6 +134,7 @@ printf("testing, completions\n");
   struct wlnode* wl;
   struct wlnode* cur;
   struct wlnode* tmp;
+  struct wlnode* lookupTest;
 
   struct dictionary* dict = dictInit ();
  // struct wlnode* test = NULL;
@@ -145,7 +146,12 @@ printf("testing, completions\n");
     if (len > 0) {
       dictInsertWord (dict, word);
   //    test = wlIns(test,word); 
-  }
+      char *wor = malloc(sizeof(char)*82);
+      strcpy(wor,word);
+      lookupTest = wlIns(lookupTest,wor);
+    }
+
+
   }
  /* 
   struct wlnode* b = wlIns(NULL,"HIHIHI");
@@ -171,7 +177,22 @@ printf("testing, completions\n");
     free (cur->word);
     free (cur);
   }
-
+  wl = lookupTest;
+  printf("Test for Lookup\n");
+  for (cur = wl; NULL != cur; cur = tmp)
+  {
+    // save cur->next into tmp before we free cur.
+    printf("Looking Up %s, %d\n",cur->word,dictLookup(dict,cur->word));
+    int len = strlen(cur->word);
+    cur->word[--len] = 'a';
+    cur->word[++len] = '\0';
+    printf("Looking Up %s, %d\n",cur->word,dictLookup(dict,cur->word));
+    cur->word[--len] = '\0';
+    printf("Looking Up %s, %d\n",cur->word,dictLookup(dict,cur->word));
+    tmp = cur->next;
+    free (cur->word);
+    free (cur);
+  }
   dictFree (dict);
 #endif
   return EXIT_SUCCESS;
