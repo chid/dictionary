@@ -189,6 +189,8 @@ printf("testing, completions\n");
     printf("Looking Up %s, %d\n",cur->word,dictLookup(dict,cur->word));
     cur->word[--len] = '\0';
     printf("Looking Up %s, %d\n",cur->word,dictLookup(dict,cur->word));
+    char t[] = "zoon";
+    printf("Looking Up %s, %d\n",t,dictLookup(dict,t));
     tmp = cur->next;
     free (cur->word);
     free (cur);
