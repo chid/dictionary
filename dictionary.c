@@ -499,7 +499,6 @@ dictLookupN (struct dictEdge* node,char* word) {
   }
   // if it's the last letter
   if (word[1] == '\0') {
-    if (node->isTerminal == True) { 
       struct dictEdge *rover = node;
       //printf("searching for %c %c\n",word[0],rover->thisChar);
       // while (word[0] < rover->thisChar && rover->sibling != NULL) {
@@ -512,14 +511,11 @@ dictLookupN (struct dictEdge* node,char* word) {
         //printf("PASS\n");
         rover = rover->sibling;
       }
-      if (word[0] == rover->thisChar) {
+      if (word[0] == rover->thisChar && rover->isTerminal == True) {
         return True;
       }
       // bugged here
       return False;
-    } else {
-      return False;
-    }
   }
   // char first = word[0];
   struct dictEdge *rover = node;
