@@ -481,9 +481,6 @@ dictLookup (struct dictionary* dict, char* word) {
   // is there a more efficient way.
   // by using two loops, this can be implemented
   // thanks to Ian Craig who showed me :)
-  // FIX
-  // I will recursively define it.
-  // UNTESTED
   assert(dict != NULL);
   return dictLookupN(dict->root,word);
 }
@@ -493,24 +490,26 @@ bool
 dictLookupN (struct dictEdge* node,char* word) {
   // todo this code still seems bugged like fuck
   if (node == NULL) {
-    // very special case, dictionary is empty
+    // very special case, dictionary is empty, clearly not in dictionary
     return False;
   }
-  assert(node != NULL);
   // terminating case.
-  if (word[0] == 0) {
-     // I assume return false
+  if (word[0] == 0) { // shouldn't really go in here... 
     return False;
-    printf("HUHWUT\n");
-    assert( 1 == 0 );
   }
   // if it's the last letter
   if (word[1] == '\0') {
     if (node->isTerminal == True) { 
       struct dictEdge *rover = node;
-      while (word[0] < rover->thisChar && rover->sibling != NULL) {
-        // wow, terrible coding, I didn't even think of the second
+      //printf("searching for %c %c\n",word[0],rover->thisChar);
+      // while (word[0] < rover->thisChar && rover->sibling != NULL) {
+      // while (rover->sibling != NULL && word[0] < rover->thisChar) // damn I had this, it's broken so badly 
+      while (rover->sibling != NULL && word[0] > rover->thisChar) 
+      {
+// and then it took me a while to figure why it's rover->sibling not rover
+        // wow, terrible coding, I didn't even think of the first 
         // check
+        //printf("PASS\n");
         rover = rover->sibling;
       }
       if (word[0] == rover->thisChar) {
