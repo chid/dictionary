@@ -134,7 +134,7 @@ printf("testing, completions\n");
   struct wlnode* wl;
   struct wlnode* cur;
   struct wlnode* tmp;
-  struct wlnode* lookupTest;
+  struct wlnode* lookupTest = NULL;
 
   struct dictionary* dict = dictInit ();
  // struct wlnode* test = NULL;
@@ -189,6 +189,8 @@ printf("testing, completions\n");
     printf("Looking Up %s, %d\n",cur->word,dictLookup(dict,cur->word));
     cur->word[--len] = '\0';
     printf("Looking Up %s, %d\n",cur->word,dictLookup(dict,cur->word));
+    printf("Looking Up zoon, %d\n",dictLookup(dict,"soon"));
+    printf("Looking Up zoon, %d\n",dictLookup(dict,"zoon"));
 
 /*    char t[8] = "zoon";
     printf("Looking Up %s\n",t);

@@ -313,6 +313,7 @@ dictInsertWord (struct dictionary* dict, char* word) {
     dict->root = dictEdgeNew(word[0]);
   }
 
+// todo this code still seems bugged like fuck
   // oh my this is icky
   // well, I suppose it's required though
   if (dict->root->thisChar > word[0]) {
@@ -385,7 +386,7 @@ insertWordR (struct dictEdge * node, char* word) {
         return;
 
       }
-
+// I do believe that kitten's algorithm was a lot better
       if (rover->thisChar == first) {
         found = True;
         // printf("FOUND YAY");
@@ -478,48 +479,57 @@ bool
 dictLookup (struct dictionary* dict, char* word) {
   // TODO: this
   // is there a more efficient way.
+  // by using two loops, this can be implemented
+  // thanks to Ian Craig who showed me :)
   // FIX
   // I will recursively define it.
   // UNTESTED
   assert(dict != NULL);
-     
   return dictLookupN(dict->root,word);
-  char first = word[0];
-  struct dictEdge *rover = dict->root;
-  while (rover != NULL) { 
-    if (first == rover->thisChar) {
-      return dictLookupN(rover->child,&word[1]);
-    } else {
-      // USE A GOTO :D
-    }
-    rover = rover->sibling;
-  }
-  // still have a lot to do with this one.
-  return False;
 }
 
 // n for internal? new?
 bool
 dictLookupN (struct dictEdge* node,char* word) {
+  // todo this code still seems bugged like fuck
+  if (node == NULL) {
+    // very special case, dictionary is empty
+    return False;
+  }
+  assert(node != NULL);
   // terminating case.
-  //return False; 
-  // this code is good :)
   if (word[0] == 0) {
-      printf("HUHWUT\n");
+     // I assume return false
+    return False;
+    printf("HUHWUT\n");
     assert( 1 == 0 );
   }
+  // if it's the last letter
   if (word[1] == '\0') {
-    if (node->isTerminal == True) { // bugged here
-      return True;
+    if (node->isTerminal == True) { 
+      struct dictEdge *rover = node;
+      while (word[0] < rover->thisChar && rover->sibling != NULL) {
+        // wow, terrible coding, I didn't even think of the second
+        // check
+        rover = rover->sibling;
+      }
+      if (word[0] == rover->thisChar) {
+        return True;
+      }
+      // bugged here
+      return False;
     } else {
       return False;
     }
   }
-  bool found = False;
-  char first = word[0];
+  // char first = word[0];
   struct dictEdge *rover = node;
   while (rover != NULL) { 
-    if (first == rover->thisChar) {
+    if (word[0] == rover->thisChar) {
+      // rover child could be null
+      if (rover->child == NULL) {
+        return False; // no more children, therefore it can't be found
+      }
       return dictLookupN(rover->child,&word[1]);
     } else {
       rover = rover->sibling;
