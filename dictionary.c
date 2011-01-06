@@ -20,26 +20,21 @@ perr(char error[]) {
   unused functions
   used as a basis for the final functions :)
     */
-void dictTrav(struct dictEdge* root);
-void dictTrav(struct dictEdge* root) {
-  // recursive first.
-  if (root == NULL)
-    return;
-  printf("%c ",root->thisChar);
-  dictTrav(root->child);
-  dictTrav(root->sibling);
-}
 
 void 
 dictList(struct dictionary* dict);
+
 void 
 dictListN(struct dictEdge* root,char* word,int level);
+
 struct wlnode*
 dictToWl(struct dictEdge* root,char* word,int level,struct wlnode* head);
+
 void 
 dictList(struct dictionary* dict) {
   dictListN(dict->root,NULL,0);
 }
+
 void dictListN(struct dictEdge* root,char* word,int level) {
   if (root == NULL)
     return;
@@ -112,6 +107,7 @@ dictToWl(struct dictEdge* root,char* word,int level,struct wlnode* head) {
   dictToWl(root->sibling,word,level,head);
   return head;
 }
+
 // oop, typo :)
 struct wlnode*
 distCompletions (struct dictionary* dict,char* word);
@@ -245,12 +241,10 @@ printDict(struct dictionary *dict);
 
 struct dictionary*
 dictInit () {
-  // we create a new dictionary
-  // and then we return it
+  // we create a new dictionary and then we return it
   struct dictionary* ndict = malloc(sizeof(struct dictionary));
-  // ndict->root = dictEdgeNew('\0');
+  assert(ndict != NULL); 
   ndict->root = NULL;
- // ndict->root = dictEdgeNew('y');
   return ndict;
 }
 
@@ -271,40 +265,24 @@ void printEdge(struct dictEdge* dnode, long n) { // attempt to create a PreOrde
     return;
   }
   int i;
-  //printf("%li\n",n);
-
   for (i=0;i != n;++i)
     printf("  ");
   
   if (dnode->isTerminal == True) {
-    //printf("TERMIN");
     printf("\033[1;33m%c\033[m\n",dnode->thisChar);
   } else {
-    //printf("%c.%d\n",dnode->thisChar,n);
     printf("%c\n",dnode->thisChar);
 
   }
-  /*
-  if (dnode->thisChar == '\0') {
-    // we are at the root node :)
-    // print a * for fun
-    printf("*\n");
-  } */ // FOR FUCKS SAKE FIX
   printEdge(dnode->child, n+1); 
   printEdge(dnode->sibling,n);
   return;
-  struct dictEdge * rover = dnode;
-  while (rover->sibling != NULL) {
-    //printf("%c ",rover->thisChar);
-    printEdge(rover->sibling, n);
-    rover = rover->sibling;
-  }
 }
 
-struct dictEdge* dictEdgeNew(char thisChar) {
+struct dictEdge* 
+dictEdgeNew(char thisChar) {
   struct dictEdge *ndictEdge = malloc(sizeof(struct dictEdge));
   assert(ndictEdge != NULL);
-
   ndictEdge->thisChar = thisChar;
   ndictEdge->child = NULL;
   ndictEdge->sibling = NULL;
@@ -396,7 +374,6 @@ insertWordR (struct dictEdge * node, char* word) {
 
     while (rover != NULL && !found) {
       // we search until we find a match or not
-      
 // new
       if (rover->thisChar > word[0]) {
         // ie it's not in the list, since we assume it's ordered
@@ -480,8 +457,6 @@ insertWordR (struct dictEdge * node, char* word) {
       else {
         printf("->>%s\n",word);
         if (word[1] == '\0') { 
-//         printf("WHY ISN'T THIS WORKING");
-           //return;
            rover->isTerminal = True;
         }
         else {
@@ -570,9 +545,6 @@ dictLookupN (struct dictEdge* node,char* word) {
  */
 struct wlnode*
 dictCompletions (struct dictionary* dict, char* word) {
-//  struct wlnode * re = NULL;
-
-  // return re;
   return distCompletions(dict,word);
 }
 
@@ -604,20 +576,7 @@ printwl (struct wlnode* wl) {
 void
 dictFree (struct dictionary* dict) {
   // the plan, free all the nodes then free the dictionary :)
-
-  /*
-  struct dictEdge* rover = dict->root;
-  rover->thisChar = '\0'; // just for fun
-  rover->thisChar = '\0'; // just for fun
-  rover->thisChar = '\0'; // just for fun
-
-  while (rover->sibling != NULL) {
-    edgeFree(rover->sibling);
-    rover = rover->sibling;
-  }
-  */
   edgeFree(dict->root);
-
   // free the dictionary is easy
   free(dict);
 }
@@ -630,6 +589,10 @@ edgeFree(struct dictEdge *node) {
   if (node != NULL) {   
     edgeFree(node->sibling);
     edgeFree(node->child);
+
+    // not sure if I need this
+    node->sibling = NULL;
+    node->child = NULL;
     free(node);
   }
 }
@@ -647,40 +610,26 @@ dictGetRoot (struct dictionary* dict) {
 
 struct wlnode* 
 wlIns (struct wlnode* wl, char* word) {
-  // I am a singularly linked list
-  printf("inserting word %s %p\n",word,word);
+  struct wlnode* new = malloc(sizeof(struct wlnode));
+  // something about this routine looks strange to me :$
+  assert(new != NULL);
+  new->word = word;
+  new->next = NULL;
   if (wl == NULL) {
-    struct wlnode* new = malloc(sizeof(struct wlnode));
-    assert(new != NULL);
-    new->word = word;
-    new->next = NULL;
-    return new;
+    wl = new;
   }
   else {
     struct wlnode* rover = wl;
-    // assert(rover != NULL);
-//    printwl(rover);
-// dcollien what's wrong with this line?
     while (rover->next != NULL) {
       rover = rover->next;
     }
-    struct wlnode* new = malloc(sizeof(struct wlnode));
     rover->next = new;
-    new->next = NULL;
-    new->word = word;
-    assert(new != NULL);
-    return wl;
   }
+  return wl;
 }
-/*
-void
-wlPrint (struct wlnode* wl) {
-  printf("starting wlprint\n");
-  while (wl != NULL) {
-    printf("%s\n",wl->word);
-    wl = wl->next;
-  }
-} */ // silly me :(
+
+
+//unused
 
 void
 wlfree (struct wlnode* wl) {
@@ -688,8 +637,5 @@ wlfree (struct wlnode* wl) {
     return;
   }
   wlfree(wl->next);
-//  free(wl->word);
-// why don't I have to free the pointer to the word?
-  // free(wl->word);
   free(wl);
 }
