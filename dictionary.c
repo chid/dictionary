@@ -481,16 +481,18 @@ dictLookup (struct dictionary* dict, char* word) {
   // FIX
   // I will recursively define it.
   // UNTESTED
+  assert(dict != NULL);
+     
+  return dictLookupN(dict->root,word);
   char first = word[0];
   struct dictEdge *rover = dict->root;
   while (rover != NULL) { 
-  if (first == rover->thisChar) {
-    return dictLookupN(rover->child,&word[1]);
-  } else {
-    // USE A GOTO :D
-
-  }
-  rover = rover->sibling;
+    if (first == rover->thisChar) {
+      return dictLookupN(rover->child,&word[1]);
+    } else {
+      // USE A GOTO :D
+    }
+    rover = rover->sibling;
   }
   // still have a lot to do with this one.
   return False;
@@ -502,8 +504,12 @@ dictLookupN (struct dictEdge* node,char* word) {
   // terminating case.
   //return False; 
   // this code is good :)
+  if (word[0] == 0) {
+      printf("HUHWUT\n");
+    assert( 1 == 0 );
+  }
   if (word[1] == '\0') {
-    if (node->isTerminal == True) {
+    if (node->isTerminal == True) { // bugged here
       return True;
     } else {
       return False;
@@ -519,12 +525,7 @@ dictLookupN (struct dictEdge* node,char* word) {
       rover = rover->sibling;
     }
   }
-  if (!found) {
-    return False;
-  } else {
-    // return dictLookupN(rover->child,&word[1]);
-  }
-  assert(1 != 1); // I don't think I should by here
+  // if it gets here it means no matches in the siblings
   return False;
 }
 
