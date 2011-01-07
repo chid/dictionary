@@ -7,6 +7,7 @@
 /* Initialise the dictionary structure
  */
 
+struct wlnode* wlRev(struct wlnode*);
 void 
 perr(char error[]) {
 #define DEBUGP
@@ -276,6 +277,9 @@ dictInsertWord (struct dictionary* dict, char* word) {
   insertWordR (dict->root, word); 
 }
 
+
+// the amount of time this takes is dependant both on size of word and size of trie
+
 void 
 insertWordR (struct dictEdge * node, char* word) {
   assert(node != NULL);
@@ -298,7 +302,7 @@ insertWordR (struct dictEdge * node, char* word) {
   }
   */
 //  printf("input string-> %s\n",word);
-  char first = word[0];
+  //char first = word[0];
   bool found = False;
   
   struct dictEdge* roverPapa = NULL;
@@ -335,7 +339,7 @@ insertWordR (struct dictEdge * node, char* word) {
 
       }
 // I do believe that kitten's algorithm was a lot better
-      if (rover->thisChar == first) {
+      if (rover->thisChar == word[0]) {
         found = True;
         // printf("FOUND YAY");
       } else {
@@ -404,7 +408,6 @@ insertWordR (struct dictEdge * node, char* word) {
       }
     }
   }
- return;
 }
 
 /* Insert a list of words into the dictionary 
@@ -420,7 +423,6 @@ dictInsertWords (struct dictionary* dict, struct wlnode* words) {
 
 /* Check whether a given word is in the dictionary
  */
-
 bool
 dictLookup (struct dictionary* dict, char* word) {
   // TODO: this
@@ -463,7 +465,6 @@ dictLookupN (struct dictEdge* node,char* word) {
       // bugged here
       return False;
   }
-  // char first = word[0];
   struct dictEdge *rover = node;
   while (rover != NULL) { 
     if (word[0] == rover->thisChar) {
@@ -486,6 +487,7 @@ dictLookupN (struct dictEdge* node,char* word) {
  */
 struct wlnode*
 dictCompletions (struct dictionary* dict, char* word) {
+  return wlRev(distCompletions(dict,word));
   return distCompletions(dict,word);
 }
 
@@ -524,6 +526,7 @@ dictFree (struct dictionary* dict) {
 
 // internal call
 // recursively free all the nodes
+// Complexity O(n) // linearly dependant on size of trie
 void
 edgeFree(struct dictEdge *node) {
   if (node != NULL) {   
@@ -538,7 +541,7 @@ edgeFree(struct dictEdge *node) {
 /* Return the root of the trie (i.e. dictionary). 
  * If the dictionary is empty, then return NULL. 
  * Otherwise, return the root of the trie. 
- */ 
+ */ // complexity O(1)
 struct dictEdge*
 dictGetRoot (struct dictionary* dict) { 
   return dict->root;
@@ -570,6 +573,8 @@ wlIns (struct wlnode* wl, char* word) {
 }*/
 
 
+/* This function does NOT do what it says on the tin :) */
+// due to the fact that the initial complexity was O(n)
 // Complexity, O(1)
 struct wlnode* 
 wlIns (struct wlnode* wl, char* word) {
@@ -588,7 +593,31 @@ wlIns (struct wlnode* wl, char* word) {
   return wl;
 }
 
+struct wlnode* wlRev(struct wlnode* wl) {
+  // done in lab 1
+  struct wlnode* new = wlIns(NULL,"");
+  struct wlnode* rover = wl;
+  /*
+  for (rover = wl;rover != NULL;rover = rover->next) {
+    rover->next = new->next;
+    new->next = rover;
+    
+  } */
+  while (rover != NULL) {
+    struct wlnode* store = rover->next; 
+      // do I get better performance if I store this variable outside the loop?
+    rover->next = new->next;
+    new->next = rover;
+    rover = store; 
+  }
+  rover = new->next;
+  new->next = NULL;
+  free(new);
+  return rover;
+}
+
 //unused
+// Complexity O(n)
 void
 wlfree (struct wlnode* wl) {
   if (wl == NULL) {

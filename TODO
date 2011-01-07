@@ -1,7 +1,13 @@
 Shorten InsertWordR
   it's currently ~130 lines
   it should be much shorter
+
 Finish testing.txt
+
 Maybe add a Reversing Code for wordlist
   since currently it's reverse sorted
   O(n)
+Done
+
+Optimize DistCompletions
+  retain recursion
