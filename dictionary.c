@@ -21,6 +21,12 @@ perr(char error[]) {
   used as a basis for the final functions :)
     */
 #if 0
+
+void printDict(struct dictionary* dict) {
+  printEdge(dict->root,0);
+  return;
+}
+
 void 
 dictList(struct dictionary* dict);
 
@@ -115,15 +121,14 @@ distCompletions (struct dictionary* dict,char* word) {
   char store[82];
   // this is stupid
   if (word[0] == 0) { // meaning that the word is blank
-    printf("doing old routine");
+    // printf("doing old routine");
     dictToWlNew(dict->root,store,0,a);
   //  return a->next;
   }
   else {
     distCompletionsN(dict->root,word,store,0,a);
   }
-//  return a;
-// if I want to see where the gap is between words
+  // if I want to see where the gap is between words
   struct wlnode* re = a->next;
   a->next = NULL;
   free(a);
@@ -154,11 +159,9 @@ distCompletionsN (struct dictEdge* root,char* word,char *store,
   if (root->isTerminal == True) {
     if (strlen(word) - 1 == level) {
       if (word[level] == root->thisChar) {
-        // oh my. this is a bug :)
         char *str = malloc(sizeof(char)*(level + 2));
         assert(str != NULL);
         strcpy(str,store);
-        //head = wlIns(head,str);
         head = wlIns(head,str);
       }
     }
@@ -222,6 +225,17 @@ dictInit () {
   return ndict;
 }
 
+struct dictEdge* 
+dictEdgeNew(char thisChar) {
+  struct dictEdge *ndictEdge = malloc(sizeof(struct dictEdge));
+  assert(ndictEdge != NULL);
+  ndictEdge->thisChar = thisChar;
+  ndictEdge->child = NULL;
+  ndictEdge->sibling = NULL;
+  ndictEdge->isTerminal = 0;
+  return ndictEdge;
+}
+    
 void printEdge(struct dictEdge* dnode, long n) {
   if (dnode == NULL) {
     return;
@@ -238,21 +252,6 @@ void printEdge(struct dictEdge* dnode, long n) {
   }
   printEdge(dnode->child, n+1); 
   printEdge(dnode->sibling,n);
-}
-void printDict(struct dictionary* dict) {
-  printEdge(dict->root,0);
-  return;
-}
-
-struct dictEdge* 
-dictEdgeNew(char thisChar) {
-  struct dictEdge *ndictEdge = malloc(sizeof(struct dictEdge));
-  assert(ndictEdge != NULL);
-  ndictEdge->thisChar = thisChar;
-  ndictEdge->child = NULL;
-  ndictEdge->sibling = NULL;
-  ndictEdge->isTerminal = 0;
-  return ndictEdge;
 }
 
 /* Insert a single word into the dictionary 
@@ -298,7 +297,7 @@ insertWordR (struct dictEdge * node, char* word) {
     return;
   }
   */
-  printf("input string-> %s\n",word);
+//  printf("input string-> %s\n",word);
   char first = word[0];
   bool found = False;
   
@@ -394,7 +393,7 @@ insertWordR (struct dictEdge * node, char* word) {
         }
       }
       else {
-        printf("->>%s\n",word);
+        //printf("->>%s\n",word);
         if (word[1] == '\0') { 
            rover->isTerminal = True;
         }
@@ -572,18 +571,22 @@ wlIns (struct wlnode* wl, char* word) {
 
 
 // Complexity, O(1)
-/*
 struct wlnode* 
 wlIns (struct wlnode* wl, char* word) {
   struct wlnode* new = malloc(sizeof(struct wlnode));
   assert(new != NULL);
+  // since we store the first node with dictCompletion
   new->word = word;
-  printf("Adding %s\n",word);
-  printf("Adding %p\n",new);
-  new->next = wl;
-  return new;
+  if (wl == NULL) {
+    new->next = wl;
+    wl = new;
+  }
+  else {
+    new->next = wl->next;
+    wl->next = new;
+  }
+  return wl;
 }
-*/
 
 //unused
 void

@@ -148,7 +148,7 @@ printf("testing, completions\n");
   //    test = wlIns(test,word); 
       char *wor = malloc(sizeof(char)*82);
       strcpy(wor,word);
-      //lookupTest = wlIns(lookupTest,wor);
+      lookupTest = wlIns(lookupTest,wor);
     }
 
 
@@ -172,8 +172,8 @@ printf("testing, completions\n");
   {
     // save cur->next into tmp before we free cur.
     tmp = cur->next;
-    printf("freeing %p\n",&cur->word);
-    printf("freeing %p\n",cur->word);
+   // printf("freeing %p\n",&cur->word);
+   // printf("freeing %p\n",cur->word);
     free (cur->word);
     free (cur);
   }
