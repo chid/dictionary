@@ -16,8 +16,8 @@ words.o: words.c /usr/include/stdlib.h /usr/include/features.h \
  /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h \
  /usr/include/bits/stdio.h /usr/include/bits/stdio2.h \
  /usr/include/string.h /usr/include/xlocale.h /usr/include/bits/string.h \
- /usr/include/bits/string2.h /usr/include/bits/string3.h dictionary.h \
- dictionary_type.h
+ /usr/include/bits/string2.h /usr/include/bits/string3.h \
+ /usr/include/assert.h dictionary.h dictionary_type.h
 
 /usr/include/stdlib.h:
 
@@ -96,6 +96,8 @@ words.o: words.c /usr/include/stdlib.h /usr/include/features.h \
 /usr/include/bits/string2.h:
 
 /usr/include/bits/string3.h:
+
+/usr/include/assert.h:
 
 dictionary.h:
 

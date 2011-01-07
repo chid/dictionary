@@ -1,4 +1,6 @@
+ZOO
 zoo
+zOO
 yak
 camel
 ant

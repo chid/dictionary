@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-
+#include <assert.h>
 #include "dictionary.h"
 #define WORDMAX 80
 
@@ -148,7 +148,7 @@ printf("testing, completions\n");
   //    test = wlIns(test,word); 
       char *wor = malloc(sizeof(char)*82);
       strcpy(wor,word);
-      lookupTest = wlIns(lookupTest,wor);
+      //lookupTest = wlIns(lookupTest,wor);
     }
 
 
@@ -162,7 +162,7 @@ printf("testing, completions\n");
   // change string to get different results:
 //  printwl(test);
   wl = dictCompletions (dict, argc < 2 ? "" : argv[1]);
-  
+  //assert(wl != NULL);
   //return;
   for (cur = wl; NULL != cur; cur =  cur->next)
     fprintf (stdout, "%s\n", cur->word);
@@ -181,6 +181,7 @@ printf("testing, completions\n");
   printf("Test for Lookup\n");
   for (cur = wl; NULL != cur; cur = tmp)
   {
+#ifdef LOOKUP
     // save cur->next into tmp before we free cur.
     printf("Looking Up %s, %d\n",cur->word,dictLookup(dict,cur->word));
     int len = strlen(cur->word);
@@ -191,7 +192,7 @@ printf("testing, completions\n");
     printf("Looking Up %s, %d\n",cur->word,dictLookup(dict,cur->word));
     printf("Looking Up zoon, %d\n",dictLookup(dict,"soon"));
     printf("Looking Up zoon, %d\n",dictLookup(dict,"zoon"));
-
+#endif
 /*    char t[8] = "zoon";
     printf("Looking Up %s\n",t);
     printf("Looking Up %s, %d\n",t,dictLookup(dict,t)); */

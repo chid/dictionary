@@ -27,9 +27,6 @@ dictList(struct dictionary* dict);
 void 
 dictListN(struct dictEdge* root,char* word,int level);
 
-struct wlnode*
-dictToWl(struct dictEdge* root,char* word,int level,struct wlnode* head);
-
 void 
 dictList(struct dictionary* dict) {
   dictListN(dict->root,NULL,0);
@@ -81,35 +78,6 @@ void dictListN(struct dictEdge* root,char* word,int level) {
 struct wlnode* 
 wlIns(struct wlnode* head,char* word);
 
-// converts all the items in a dictionary into a linked list of words
-struct wlnode*
-dictToWl(struct dictEdge* root,char* word,int level,struct wlnode* head) {
-  if (root == NULL) { // for some reason this works
-    return head;
-  }
-  if (word == NULL) {
-    word = malloc(sizeof(char)*2);
-    assert(word != NULL);
-    word[0] = root->thisChar;
-    word[1] = 0;
-  } else {
-    int i = level + 2; // the array size is strlen(word)+1
-//    word = realloc (word, sizeof(char)*(i));
-    word[i-1] = 0;
-    word[i-2] = root->thisChar;
-  }
-  if (root->isTerminal == True) {
-    //printf("adding word %s\n",word);
-    char *str = malloc(sizeof(char)*(level + 2));
-    assert(str != NULL);
-    strcpy(str,word);
-    head = wlIns(head,str);
-  }
-  dictToWl(root->child,word,level+1,head);
-  dictToWl(root->sibling,word,level,head);
-  return head;
-}
-
 // oop, typo :)
 struct wlnode*
 distCompletions (struct dictionary* dict,char* word);
@@ -118,6 +86,7 @@ distCompletionsN (struct dictEdge* root,char* word,char *store,
   int level, struct wlnode* head);
 
 
+// converts all the items in a dictionary into a linked list of words
 // this isn't that bad
 void
 dictToWlNew (struct dictEdge* root,char *store,
@@ -253,19 +222,7 @@ dictInit () {
   return ndict;
 }
 
-void printEdge(struct dictEdge* dnode, long n);
-void printDict(struct dictionary* dict) {
-  printEdge(dict->root,0);
-  return;
-  printf("%p",&dict);
-  if (dict->root == NULL) {
-    return;
-  }
-  assert(dict->root != NULL);
-  printf("%c",dict->root->thisChar);
-}
-
-void printEdge(struct dictEdge* dnode, long n) { // attempt to create a PreOrde
+void printEdge(struct dictEdge* dnode, long n) {
   if (dnode == NULL) {
     return;
   }
@@ -281,6 +238,9 @@ void printEdge(struct dictEdge* dnode, long n) { // attempt to create a PreOrde
   }
   printEdge(dnode->child, n+1); 
   printEdge(dnode->sibling,n);
+}
+void printDict(struct dictionary* dict) {
+  printEdge(dict->root,0);
   return;
 }
 
@@ -299,20 +259,10 @@ dictEdgeNew(char thisChar) {
  */
 void
 dictInsertWord (struct dictionary* dict, char* word) {
-  // make sure I can actually do operations on the word.
-
-/*  printf("%d",strlen(word));
-  int i = 0;
-  while (word[i] != 0) {
-    printf("%c\n",word[i]);
-    ++i;
-  } */
-  
   // assume I'm not in the list.
   if (dict->root == NULL) {
     dict->root = dictEdgeNew(word[0]);
   }
-
 // todo this code still seems bugged like fuck
   // oh my this is icky
   // well, I suppose it's required though
@@ -323,9 +273,8 @@ dictInsertWord (struct dictionary* dict, char* word) {
     dict->root = newp;
   } // TODO, make sure this won't leave any extra nodes
 //  printf("comparing %d with %d\n",dict->root->thisChar,word[0]);
-  assert(dict->root->thisChar <= word[0]);
+  assert(dict->root->thisChar <= word[0]); // make sure that the root is okay :)
   insertWordR (dict->root, word); 
-
 }
 
 void 
@@ -463,13 +412,11 @@ insertWordR (struct dictEdge * node, char* word) {
  */
 void
 dictInsertWords (struct dictionary* dict, struct wlnode* words) {
-  // UNTESTED
   // FIX
   while (words != NULL) {
     dictInsertWord(dict,words->word);
     words = words->next;
   }
-  
 }
 
 /* Check whether a given word is in the dictionary
@@ -577,15 +524,12 @@ dictFree (struct dictionary* dict) {
 }
 
 // internal call
-
 // recursively free all the nodes
 void
 edgeFree(struct dictEdge *node) {
   if (node != NULL) {   
     edgeFree(node->sibling);
     edgeFree(node->child);
-
-    // not sure if I need this
     node->sibling = NULL;
     node->child = NULL;
     free(node);
@@ -603,6 +547,7 @@ dictGetRoot (struct dictionary* dict) {
 
 // word list functions below :)
 
+/*
 struct wlnode* 
 wlIns (struct wlnode* wl, char* word) {
   struct wlnode* new = malloc(sizeof(struct wlnode));
@@ -614,18 +559,33 @@ wlIns (struct wlnode* wl, char* word) {
     wl = new;
   }
   else {
-    struct wlnode* rover = wl;
+    struct wlnode* rover = wl; // coming back to this, I
+    // was just thinking, what the heck am I doing here ;D
+    // since there was no requirement for it to be ordered
     while (rover->next != NULL) {
       rover = rover->next;
     }
     rover->next = new;
   }
   return wl;
-}
+}*/
 
+
+// Complexity, O(1)
+/*
+struct wlnode* 
+wlIns (struct wlnode* wl, char* word) {
+  struct wlnode* new = malloc(sizeof(struct wlnode));
+  assert(new != NULL);
+  new->word = word;
+  printf("Adding %s\n",word);
+  printf("Adding %p\n",new);
+  new->next = wl;
+  return new;
+}
+*/
 
 //unused
-
 void
 wlfree (struct wlnode* wl) {
   if (wl == NULL) {
