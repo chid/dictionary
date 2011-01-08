@@ -153,6 +153,8 @@ printf("testing, completions\n");
 
 
   }
+
+printDict(dict);return 0;
  /* 
   struct wlnode* b = wlIns(NULL,"HIHIHI");
   struct wlnode* a = dictToWl(dict->root,NULL,0,b);

@@ -21,13 +21,14 @@ perr(char error[]) {
   unused functions
   used as a basis for the final functions :)
     */
-#if 0
 
 void printDict(struct dictionary* dict) {
-  printEdge(dict->root,0);
+  long a = 0;
+  printEdge(dict->root,a);
   return;
 }
 
+#if 0
 void 
 dictList(struct dictionary* dict);
 
@@ -140,22 +141,15 @@ void
 distCompletionsN (struct dictEdge* root,char* word,char *store,
   int level, struct wlnode* head) {
   if (root == NULL) {
-    // free(store);
+    // if the root is null we are done!
     return;
   }
-  assert(store != NULL);
-  if (store == NULL) {
-    //store = malloc(sizeof(char)*2);
-    store = malloc(sizeof(char)*82);
-    assert(store != NULL);
-    store[0] = root->thisChar;
-    store[1] = 0;
-  } else {
-    int i = level + 2; // the array size is strlen(word)+1
-    //store = realloc (store, sizeof(char)*(i));
-    store[i-1] = 0;
-    store[i-2] = root->thisChar;
-  }
+  assert(store != NULL); // since I declared it before
+  int i = level + 2; // the array size is strlen(word)+1
+  store[i-1] = 0;
+  store[i-2] = root->thisChar; 
+  // what this does is append root->thisChar to then end of stored string
+  
   // FIX
   if (root->isTerminal == True) {
     if (strlen(word) - 1 == level) {
@@ -347,8 +341,9 @@ insertWordR (struct dictEdge * node, char* word) {
         rover = rover->sibling;
       }
     }
-    if (found == False) { // not found :)
-      printf("not found with arg %s\n",word);
+    // we add it to the end ;)
+    if (found == False) { // not found :) && not placed in order
+      fprintf(stderr,"not found with arg %s\n",word);
       // just add the whole word in.
       rover = node; 
       while (rover->sibling != NULL) {
