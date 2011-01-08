@@ -22,10 +22,9 @@ perr(char error[]) {
   used as a basis for the final functions :)
     */
 
+void printEdge(struct dictEdge* dnode, long n);
 void printDict(struct dictionary* dict) {
-  long a = 0;
-  printEdge(dict->root,a);
-  return;
+  printEdge(dict->root,0);
 }
 
 #if 0
@@ -365,19 +364,20 @@ insertWordR (struct dictEdge * node, char* word) {
          ++i;
          if (word[i] == '\0') {
            rover->child->isTerminal = True;
+         }
        }
        if (i == 1) { // bug fix.
     // we didn't enter loop
     // then the node is the final element
          node->isTerminal = True;
-         } // seems to make sense to put this at the front :) 
-       }
-
+       } // seems to make sense to put this at the front :) 
+       // case for notentering the loop
      }
      else {
       // looks like a bug here;
       if (rover->child != NULL) {
         if (word[1] == '\0') { 
+          printf("HERE");
            rover->isTerminal = True; 
         }
         else {
