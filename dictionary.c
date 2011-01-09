@@ -276,11 +276,10 @@ dictInsertWord (struct dictionary* dict, char* word) {
 void 
 insertWordR (struct dictEdge * node, char* word) {
   assert(node != NULL);
-// oh I remember again, to prevent against sloppy code ;)
-// passing a null edge is silly
+  // oh I remember again, to prevent against sloppy code ;)
+  // passing a null edge is silly
 
-// forgot why I had this assertion :$
-/*
+  /*
   if (word[1] == 0) {
     node->isTerminal = True;
   } */
@@ -294,12 +293,12 @@ insertWordR (struct dictEdge * node, char* word) {
     return;
   }
   */
-//  printf("input string-> %s\n",word);
+  //printf("input string-> %s\n",word);
   //char first = word[0];
   bool found = False;
-  
   struct dictEdge* roverPapa = NULL;
-  //stopping case, word[0] == \0
+  //stopping case, word[0] == \0 // this is a lie!
+
   if (word[0] != '\0') {
     struct dictEdge* rover = node;
   
@@ -355,6 +354,8 @@ insertWordR (struct dictEdge * node, char* word) {
       while (word[i] != 0) {
         struct dictEdge* rover = node;
         int j;
+        // terrible code
+        // TODO
         for (j=0;j<i-1;j++) {
           assert(rover->child != NULL);
           rover = rover->child;
@@ -367,21 +368,23 @@ insertWordR (struct dictEdge * node, char* word) {
          }
        }
        if (i == 1) { // bug fix.
-    // we didn't enter loop
-    // then the node is the final element
+       // we didn't enter loop
+       // then the node is the final element
          node->isTerminal = True;
        } // seems to make sense to put this at the front :) 
        // case for notentering the loop
      }
-     else {
+     else { 
+      // found == True
       // looks like a bug here;
       if (rover->child != NULL) {
         if (word[1] == '\0') { 
-          printf("HERE");
+           printf("HERE"); // tc3 goes here
            rover->isTerminal = True; 
         }
         else {
           // new FIX
+          // inorderFix, create the node and set the pointer
           if (rover->child->thisChar > word[1]) {
             // we need to create
             struct dictEdge* newp = dictEdgeNew(word[1]);
@@ -399,6 +402,8 @@ insertWordR (struct dictEdge * node, char* word) {
         else {
            rover->child = dictEdgeNew(word[1]);
            insertWordR(rover->child,&word[1]);
+           // this could be done with a forloop
+           // since all we're doing is spawning children
         }
       }
     }

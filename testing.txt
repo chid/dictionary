@@ -76,3 +76,10 @@ a
     b \t
     d \t
 
+File: tc3
+
+File: tc4
+Aim: To test Distcompletions
+Expected Output:
+store
+stored
