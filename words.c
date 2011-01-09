@@ -144,11 +144,15 @@ printf("testing, completions\n");
     if (len > 0 && '\n' == word[len - 1])
       word[--len] = '\0';
     if (len > 0) {
-      dictInsertWord (dict, word);
+      if (word[0] == 'L') {
+        char *wor = malloc(sizeof(char)*82);
+        strcpy(wor,&word[1]);
+        lookupTest = wlIns(lookupTest,wor);
+      } 
+      else {
+        dictInsertWord (dict, word);
+      }
   //    test = wlIns(test,word); 
-      char *wor = malloc(sizeof(char)*82);
-      strcpy(wor,word);
-      lookupTest = wlIns(lookupTest,wor);
     }
 
 

@@ -293,6 +293,7 @@ insertWordR (struct dictEdge * node, char* word) {
     return;
   }
   */
+  // I do believe that kitten's algorithm was a lot better
   //printf("input string-> %s\n",word);
   //char first = word[0];
   bool found = False;
@@ -330,7 +331,6 @@ insertWordR (struct dictEdge * node, char* word) {
         return;
 
       }
-// I do believe that kitten's algorithm was a lot better
       if (rover->thisChar == word[0]) {
         found = True;
         // printf("FOUND YAY");
