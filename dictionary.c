@@ -480,7 +480,21 @@ dictLookupN (struct dictEdge* node,char* word) {
 
 bool
 dictLookupIter (struct dictionary* dict, char* word) {
-  i = 0; // loop through elements of the word
+  int i = 0; // loop through elements of the word
+  struct dictEdge* node = dict->root;
+  struct dictEdge* rover;
+  while (i != strlen(word)) {
+    for (rover = node;
+      rover->sibling != NULL;rover = rover->sibling) {
+      // set node
+      // if equal
+      if (0) {
+        node = node->child;
+      }
+    }
+    ++i; // look up the next letter with parent node
+  }
+    // if (word[i+1]) == 
   //while (word[1] != 
 
   return False;
