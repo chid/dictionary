@@ -83,3 +83,12 @@ Aim: To test Distcompletions
 Expected Output:
 store
 stored
+
+
+
+tc5
+creating a trie with all features
+Insert At Beginning of Root, End, Middle
+Insert At Beginning of Level 1, End, Middle
+
+Create words with Siblings ( to test lookup )

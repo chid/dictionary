@@ -8,3 +8,8 @@ word
 Makefile
 config.*
 *.tar.gz
+*.gcda
+*.gcno
+mf.tar
+mf
+

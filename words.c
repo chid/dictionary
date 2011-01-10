@@ -146,8 +146,12 @@ printf("testing, completions\n");
     if (len > 0) {
       if (word[0] == 'L') {
         char *wor = malloc(sizeof(char)*82);
-        strcpy(wor,&word[1]);
-        lookupTest = wlIns(lookupTest,wor);
+        if (word[1] != '\0') {
+          strcpy(wor,&word[1]);
+          //lookupTest = wlIns(lookupTest,&wor);
+          lookupTest = wlIns(lookupTest,&wor[0]);
+          //printf("%p",&wor[0]);
+        }
       } 
       else {
         dictInsertWord (dict, word);
@@ -158,7 +162,7 @@ printf("testing, completions\n");
 
   }
 
-printDict(dict);return 0;
+//printDict(dict);return 0;
  /* 
   struct wlnode* b = wlIns(NULL,"HIHIHI");
   struct wlnode* a = dictToWl(dict->root,NULL,0,b);
@@ -184,9 +188,12 @@ printDict(dict);return 0;
     free (cur);
   }
   wl = lookupTest;
+  wl = wlRev(wl);
   printf("Test for Lookup\n");
   for (cur = wl; NULL != cur; cur = tmp)
   {
+    printf("Looking Up %s, %d\n",cur->word,dictLookup(dict,cur->word));
+    printf("Looking Up %s, %d\n",cur->word,dictLookupIter(dict,cur->word));
 #ifdef LOOKUP
     // save cur->next into tmp before we free cur.
     printf("Looking Up %s, %d\n",cur->word,dictLookup(dict,cur->word));

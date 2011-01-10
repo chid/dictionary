@@ -4,8 +4,6 @@
 #include "dictionary.h"
 #include <string.h>
 
-/* Initialise the dictionary structure
- */
 
 struct wlnode* wlRev(struct wlnode*);
 void 
@@ -15,7 +13,6 @@ perr(char error[]) {
   fprintf(stderr,"%s\n",error);
 #endif
 }
-
 
 /* 
   unused functions
@@ -92,7 +89,6 @@ void
 distCompletionsN (struct dictEdge* root,char* word,char *store,
   int level, struct wlnode* head);
 
-
 // converts all the items in a dictionary into a linked list of words
 // this isn't that bad
 void
@@ -120,6 +116,7 @@ distCompletions (struct dictionary* dict,char* word) {
 //  printf("strlen of word is %d\n",strlen(word));return;
   struct wlnode* a = wlIns(NULL,"hi");
   char store[82];
+  store[0] = 0; // do I need this?
   // this is stupid
   if (word[0] == 0) { // meaning that the word is blank
     // printf("doing old routine");
@@ -148,7 +145,6 @@ distCompletionsN (struct dictEdge* root,char* word,char *store,
   store[i-1] = 0;
   store[i-2] = root->thisChar; 
   // what this does is append root->thisChar to then end of stored string
-  
   // FIX
   if (root->isTerminal == True) {
     if (strlen(word) - 1 == level) {
@@ -160,33 +156,28 @@ distCompletionsN (struct dictEdge* root,char* word,char *store,
       }
     }
   }
-
+/*
   if (root->isTerminal == True) {
     if (strlen(word) - level == 1 && word[level] == root->thisChar) {
       printf("maybe I should add %s level: %d\n",word,level);
     }
-  }
+  } */
   if (root->isTerminal == True 
     && (word[level] == root->thisChar || level >= strlen(word))
     && (level >= strlen(word) )) { 
+    
     if (strlen(store) == 0) {
-      // free(store);
-      assert(1 != 0);
-      return;
-//      this looks like a bug
+      return; // since the string is empty, we don't add it
     }
-    printf("adding store %s\n",store);
+    // printf("adding store %s\n",store);
+    // printf("adding str %s %p len: %d\n",str,str,strlen(str));
     char *str = malloc(sizeof(char)*(level + 2));
-/*    char test[level + 2];
-    char *str;
-    str = test; */ // this code doesn't seem to work at all :(
     assert(str != NULL);
     strcpy(str,store);
-//    printf("adding str %s %p len: %d\n",str,str,strlen(str));
     head = wlIns(head,str);
-  }
+  } // just because we added a word doesn't mean we're finished!
   if (level < strlen(word) && word[level] == root->thisChar) {
-   // printf("we have a hit for %c!\n",word[level]);
+    // printf("we have a hit for %c!\n",word[level]);
     distCompletionsN (root->child,word,store,level+1,head);
   } else if (level >=strlen(word)) {
     // printf("here");
@@ -195,7 +186,10 @@ distCompletionsN (struct dictEdge* root,char* word,char *store,
     distCompletionsN (root->sibling,word,store,level,head);
   } else {
     distCompletionsN (root->sibling,word,store,level,head);
-  }
+  } 
+  /* these three cases
+
+  */
 }
 // just to test out a few algorithms.
 struct wlnode* 
@@ -210,6 +204,8 @@ struct dictEdge* dictEdgeNew(char thisChar);
 void 
 printDict(struct dictionary *dict);
 
+/* Initialise the dictionary structure
+ */
 struct dictionary*
 dictInit () {
   // we create a new dictionary and then we return it
@@ -425,7 +421,6 @@ dictInsertWords (struct dictionary* dict, struct wlnode* words) {
  */
 bool
 dictLookup (struct dictionary* dict, char* word) {
-  // TODO: this
   // is there a more efficient way.
   // by using two loops, this can be implemented
   // thanks to Ian Craig who showed me :)
@@ -437,23 +432,23 @@ dictLookup (struct dictionary* dict, char* word) {
 bool
 dictLookupN (struct dictEdge* node,char* word) {
   // todo this code still seems bugged like fuck
+  // terminating case. // dictionary/word is NULL/\0
   if (node == NULL) {
     // very special case, dictionary is empty, clearly not in dictionary
     return False;
   }
-  // terminating case.
   if (word[0] == 0) { // shouldn't really go in here... 
     return False;
   }
-  // if it's the last letter
-  if (word[1] == '\0') {
+
+  if (word[1] == '\0') {  // if it's the last letter
       struct dictEdge *rover = node;
       //printf("searching for %c %c\n",word[0],rover->thisChar);
-      // while (word[0] < rover->thisChar && rover->sibling != NULL) {
+      // while (word[0] < rover->thisChar && rover->sibling != NULL) 
       // while (rover->sibling != NULL && word[0] < rover->thisChar) // damn I had this, it's broken so badly 
       while (rover->sibling != NULL && word[0] > rover->thisChar) 
       {
-// and then it took me a while to figure why it's rover->sibling not rover
+        // and then it took me a while to figure why it's rover->sibling not rover
         // wow, terrible coding, I didn't even think of the first 
         // check
         //printf("PASS\n");
@@ -468,6 +463,8 @@ dictLookupN (struct dictEdge* node,char* word) {
   struct dictEdge *rover = node;
   while (rover != NULL) { 
     if (word[0] == rover->thisChar) {
+      // if we are here we know that word[1] != 0
+      // therefore we have not finished
       // rover child could be null
       if (rover->child == NULL) {
         return False; // no more children, therefore it can't be found
@@ -481,19 +478,31 @@ dictLookupN (struct dictEdge* node,char* word) {
   return False;
 }
 
+bool
+dictLookupIter (struct dictionary* dict, char* word) {
+  i = 0; // loop through elements of the word
+  //while (word[1] != 
+
+  return False;
+}
+
 /* Extract all words in the dictionary (the order does not matter).
- *
+ * Should return them in alphabetical order
  * Complexity: see constraint in the assignment specification.
  */
 struct wlnode*
 dictCompletions (struct dictionary* dict, char* word) {
-  return wlRev(distCompletions(dict,word));
+  return wlRev(distCompletions(dict,word)); // fun fix
   return distCompletions(dict,word);
 }
 
 /* testing functions for the above */
 void
 printwl (struct wlnode* wl) {
+   struct wlnode * cur;
+   for (cur = wl; NULL != cur; cur =  cur->next)
+      fprintf (stdout, "%s\n", cur->word);
+#if 0
   /*
    struct wlnode * cur;
    for (cur = wl; NULL != cur; cur =  cur->next)
@@ -509,19 +518,20 @@ printwl (struct wlnode* wl) {
    //return;
    //for (cur = wl; NULL != cur && cur != 0x65646e61; cur = cur->next)
    for (cur = wl; NULL != cur; cur = cur->next)
-      fprintf (stdout, "%s %p\n", cur->word, cur->word);
+     fprintf (stdout, "%s %p\n", cur->word, cur->word);
+#endif
 }
 
 
 /* Erase all dictionary entries and release all memory allocated for the
  * dictionary.
  */
+// Complexity O(n) // linearly dependant on size of trie
 void
 dictFree (struct dictionary* dict) {
   // the plan, free all the nodes then free the dictionary :)
   edgeFree(dict->root);
-  // free the dictionary is easy
-  free(dict);
+  free(dict); // freeing the dictionary is easy
 }
 
 // internal call
@@ -548,7 +558,6 @@ dictGetRoot (struct dictionary* dict) {
 }
 
 // word list functions below :)
-
 /*
 struct wlnode* 
 wlIns (struct wlnode* wl, char* word) {
@@ -572,10 +581,12 @@ wlIns (struct wlnode* wl, char* word) {
   return wl;
 }*/
 
-
-/* This function does NOT do what it says on the tin :) */
+/* This function does NOT do what it says on the tin */
 // due to the fact that the initial complexity was O(n)
 // Complexity, O(1)
+// I was thinking of moving the mallocing to this function but then thought
+// I might break something
+/* This function inserts a word by reference in the second position, (or first if wlnode is NULL */
 struct wlnode* 
 wlIns (struct wlnode* wl, char* word) {
   struct wlnode* new = malloc(sizeof(struct wlnode));
@@ -592,17 +603,13 @@ wlIns (struct wlnode* wl, char* word) {
   }
   return wl;
 }
-
+// Operation Complexity O(n)
+// Space Requirement, O(1)
+// In place reversing of a linked list
 struct wlnode* wlRev(struct wlnode* wl) {
   // done in lab 1
   struct wlnode* new = wlIns(NULL,"");
   struct wlnode* rover = wl;
-  /*
-  for (rover = wl;rover != NULL;rover = rover->next) {
-    rover->next = new->next;
-    new->next = rover;
-    
-  } */
   while (rover != NULL) {
     struct wlnode* store = rover->next; 
       // do I get better performance if I store this variable outside the loop?
@@ -610,7 +617,7 @@ struct wlnode* wlRev(struct wlnode* wl) {
     new->next = rover;
     rover = store; 
   }
-  rover = new->next;
+  rover = new->next; // saves defining another variable :)
   new->next = NULL;
   free(new);
   return rover;
