@@ -11,3 +11,5 @@ Done
 
 Optimize DistCompletions
   retain recursion
+
+Write a colourizer for gcov

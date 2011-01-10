@@ -485,16 +485,23 @@ dictLookupIter (struct dictionary* dict, char* word) {
   struct dictEdge* rover;
   while (i != strlen(word)) {
     for (rover = node;
-      rover->sibling != NULL;rover = rover->sibling) {
+      rover != NULL;
+      rover = rover->sibling) {
       // set node
       // if equal
-      if (0) {
-        node = node->child;
+      if (word[i] == rover->thisChar) {
+        if (word[i + 1] == 0) {
+          if (rover->isTerminal) {
+            return True;
+          }
+        }
+        node = rover->child;
+        // break out of loop
       }
     }
     ++i; // look up the next letter with parent node
   }
-    // if (word[i+1]) == 
+  // if (word[i+1]) == 
   //while (word[1] != 
 
   return False;
