@@ -4,6 +4,7 @@
 #include "dictionary.h"
 #include <string.h>
 
+/* xkcd.com/844 describes this code perfectly */
 
 struct wlnode* wlRev(struct wlnode*);
 void 
@@ -487,7 +488,6 @@ dictLookupIter (struct dictionary* dict, char* word) {
     for (rover = node;
       rover != NULL;
       rover = rover->sibling) {
-      // set node
       // if equal
       if (word[i] == rover->thisChar) {
         if (word[i + 1] == 0) {
@@ -496,14 +496,16 @@ dictLookupIter (struct dictionary* dict, char* word) {
           }
         }
         node = rover->child;
-        // break out of loop
+        break; // break out of loop
+      }
+      // if we've reached the end of the word and we haven't found it then
+      if (rover->sibling == NULL || word[i] < rover->thisChar) {
+        // don't really need the second one
+        return False;
       }
     }
     ++i; // look up the next letter with parent node
   }
-  // if (word[i+1]) == 
-  //while (word[1] != 
-
   return False;
 }
 
