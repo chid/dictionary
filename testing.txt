@@ -92,3 +92,8 @@ Insert At Beginning of Root, End, Middle
 Insert At Beginning of Level 1, End, Middle
 
 Create words with Siblings ( to test lookup )
+
+
+tc6
+Aim, to coverage test distCompletionsN
+As well as take all cases
