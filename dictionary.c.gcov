@@ -1,7 +1,7 @@
         -:    0:Source:dictionary.c
         -:    0:Graph:dictionary.gcno
         -:    0:Data:dictionary.gcda
-        -:    0:Runs:2
+        -:    0:Runs:1
         -:    0:Programs:1
         -:    1:#include <assert.h>
         -:    2:#include <stdio.h>
@@ -10,654 +10,578 @@
         -:    5:#include <string.h>
         -:    6:
         -:    7:/* xkcd.com/844 describes this code perfectly */
-        -:    8:
-        -:    9:struct wlnode* wlRev(struct wlnode*);
-        -:   10:void 
-        2:   11:perr(char error[]) {
-        -:   12:#define DEBUGP
-        -:   13:#ifdef DEBUGP
-        2:   14:  fprintf(stderr,"%s\n",error);
-        -:   15:#endif
-        2:   16:}
-        -:   17:
-        -:   18:/* 
-        -:   19:  unused functions
-        -:   20:  used as a basis for the final functions :)
-        -:   21:    */
-        -:   22:
-        -:   23:void printEdge(struct dictEdge* dnode, long n);
-    #####:   24:void printDict(struct dictionary* dict) {
-    #####:   25:  printEdge(dict->root,0);
-    #####:   26:}
-        -:   27:
-        -:   28:#if 0
-        -:   29:void 
-        -:   30:dictList(struct dictionary* dict);
-        -:   31:
-        -:   32:void 
-        -:   33:dictListN(struct dictEdge* root,char* word,int level);
-        -:   34:
-        -:   35:void 
-        -:   36:dictList(struct dictionary* dict) {
-        -:   37:  dictListN(dict->root,NULL,0);
-        -:   38:}
+        -:    8:/*
+        -:    9:  the way I should have coded this was write two functions
+        -:   10:
+        -:   11:  lookupAndReturnNode (struct dictionary *dict, char *word)
+        -:   12:    which returns the final node that could be found
+        -:   13:    and also the levels it has traversed (no of times it called node->child)
+        -:   14:
+        -:   15:  generateWl (dictEdge *node, char* prefix)
+        -:   16:    which returns a wordlist of all words under node
+        -:   17:    and prepending the prefix
+        -:   18:
+        -:   19:  after these two functions are written, all other functions can be called just by using these two
+        -:   20:
+        -:   21:  lookup
+        -:   22:    lookupAndReturnNode
+        -:   23:    if (strlen(word) == i + 1) // i indexed from 0
+        -:   24:      return True
+        -:   25:    return False
+        -:   26:  dictCompletions
+        -:   27:    lookupAndReturnNode
+        -:   28:    word[i+1] = 0
+        -:   29:    generateWl (node, word);
+        -:   30:  printdict
+        -:   31:    generateWl (node, "")
+        -:   32:    printwl (wl)
+        -:   33:  insert
+        -:   34:    lookupAndReturnNode
+        -:   35:    while (i < strlen(word))
+        -:   36:      node->child = dictEdgeNew(word[i + 1])
+        -:   37:      node = node->child
+        -:   38:      ++i
         -:   39:
-        -:   40:void dictListN(struct dictEdge* root,char* word,int level) {
-        -:   41:  if (root == NULL)
-        -:   42:    return;
-        -:   43:  printf("%p\n",root);
-        -:   44:  // word
-        -:   45:  /*
-        -:   46:  if (root->isTerminal == True) {
-        -:   47:    printf("ISTERMINAL PRINTING OUT WORD len(%d)\n",strlen(word));
-        -:   48:    printf("%s\n",word);
-        -:   49:  } */
-        -:   50:
-        -:   51:  dictListN(root->sibling,word,level);
-        -:   52: // if (root->thisChar == 0)
-        -:   53: // return; 
-        -:   54:  assert(root->thisChar != '\0');
-        -:   55:
-        -:   56:  if (word == NULL) {
-        -:   57://    word = malloc(sizeof(char)*2);
-        -:   58:    word = malloc(sizeof(char)*82);
-        -:   59:    assert(word != NULL);
-        -:   60:    // *word = sprintf("%c\0",root->thisChar);
-        -:   61:    word[0] = root->thisChar;
-        -:   62:    // printf(">%c<",root->thisChar);
-        -:   63:    word[1] = 0;
-        -:   64:  } else {
-        -:   65:    int i = level + 2; // the array size is strlen(word)+1
-        -:   66://    word = realloc (word, sizeof(char)*(i));
-        -:   67:    word[i-1] = 0;
-        -:   68:    word[i-2] = root->thisChar;
-        -:   69://    printf("ATTEMPTING TO REALLOC for >%c<",root->thisChar);
-        -:   70:    // add the char to the end of word, and/or move the pointer:)
-        -:   71:    // printf("%d vs %d\n",i,strlen(word));
-        -:   72:  }
-        -:   73:  if (root->isTerminal == True) {
-        -:   74:    printf("ISTERMINAL PRINTING OUT WORD len(%d)\n",strlen(word));
-        -:   75:    printf("%s\n",word);
-        -:   76:  }
-        -:   77:  dictListN(root->child,word,level+1);
-        -:   78:}
-        -:   79:#endif
-        -:   80:/* begining of true functions */
-        -:   81:
-        -:   82:// insert into slist and return the head
-        -:   83:struct wlnode* 
-        -:   84:wlIns(struct wlnode* head,char* word);
-        -:   85:
-        -:   86:// oop, typo :)
-        -:   87:struct wlnode*
-        -:   88:distCompletions (struct dictionary* dict,char* word);
-        -:   89:void
-        -:   90:distCompletionsN (struct dictEdge* root,char* word,char *store,
-        -:   91:  int level, struct wlnode* head);
-        -:   92:
-        -:   93:// converts all the items in a dictionary into a linked list of words
-        -:   94:// this isn't that bad
-        -:   95:void
-    #####:   96:dictToWlNew (struct dictEdge* root,char *store,
-        -:   97:  int level, struct wlnode* head) {
-    #####:   98:  if (root == NULL) 
-    #####:   99:    return;// terminating case :)
-    #####:  100:  assert(store != NULL); // store should be defined already
-    #####:  101:  int i = level + 2; 
-    #####:  102:  store[i-1] = 0;
-    #####:  103:  store[i-2] = root->thisChar;
-    #####:  104:  if (root->isTerminal == True) {
-    #####:  105:    char *str = malloc(sizeof(char)*(level + 2)); 
-        -:  106:    // space for new char + null
-    #####:  107:    assert(str != NULL); // we have enough memory
-    #####:  108:    strcpy(str,store); // copy everything
-    #####:  109:    wlIns(head,str);
-        -:  110:  } // do it in order :)
-    #####:  111:  dictToWlNew (root->child,store,level+1,head);
-    #####:  112:  dictToWlNew (root->sibling,store,level,head);
-        -:  113:}
-        -:  114:
-        -:  115:struct wlnode*
-        2:  116:distCompletions (struct dictionary* dict,char* word) {
-        -:  117://  printf("strlen of word is %d\n",strlen(word));return;
-        2:  118:  struct wlnode* a = wlIns(NULL,"hi");
-        -:  119:  char store[82];
-        2:  120:  store[0] = 0; // do I need this?
-        -:  121:  // this is stupid
-        2:  122:  if (word[0] == 0) { // meaning that the word is blank
-        -:  123:    // printf("doing old routine");
-    #####:  124:    dictToWlNew(dict->root,store,0,a);
-        -:  125:  //  return a->next;
-        -:  126:  }
-        -:  127:  else {
-        2:  128:    distCompletionsN(dict->root,word,store,0,a);
-        -:  129:  }
-        -:  130:  // if I want to see where the gap is between words
-        2:  131:  struct wlnode* re = a->next;
-        2:  132:  a->next = NULL;
-        2:  133:  free(a);
-        2:  134:  return re;
-        -:  135:}
-        -:  136:
-        -:  137:void
-       45:  138:distCompletionsN (struct dictEdge* root,char* word,char *store,
-        -:  139:  int level, struct wlnode* head) {
-       45:  140:  if (root == NULL) {
-        -:  141:    // if the root is null we are done!
-       17:  142:    return;
-        -:  143:  }
-       28:  144:  assert(store != NULL); // since I declared it before
-       28:  145:  int i = level + 2; // the array size is strlen(word)+1
-       28:  146:  store[i-1] = 0;
-       28:  147:  store[i-2] = root->thisChar; 
-        -:  148:  // what this does is append root->thisChar to then end of stored string
-        -:  149:  // FIX
-       28:  150:  if (root->isTerminal == True) {
-        4:  151:    if (strlen(word) - 1 == level) {
-        1:  152:      if (word[level] == root->thisChar) {
-        1:  153:        char *str = malloc(sizeof(char)*(level + 2));
-        1:  154:        assert(str != NULL);
-        1:  155:        strcpy(str,store);
-        1:  156:        head = wlIns(head,str);
-        -:  157:      }
-        -:  158:    }
-        -:  159:  }
-        -:  160:/*
-        -:  161:  if (root->isTerminal == True) {
-        -:  162:    if (strlen(word) - level == 1 && word[level] == root->thisChar) {
-        -:  163:      printf("maybe I should add %s level: %d\n",word,level);
-        -:  164:    }
-        -:  165:  } */
-       39:  166:  if (root->isTerminal == True 
-       35:  167:    && (word[level] == root->thisChar || level >= strlen(word))
-        4:  168:    && (level >= strlen(word) )) { 
-        -:  169:    
-        3:  170:    if (strlen(store) == 0) {
-    #####:  171:      return; // since the string is empty, we don't add it
-        -:  172:    }
-        -:  173:    // printf("adding store %s\n",store);
-        -:  174:    // printf("adding str %s %p len: %d\n",str,str,strlen(str));
-        3:  175:    char *str = malloc(sizeof(char)*(level + 2));
-        3:  176:    assert(str != NULL);
-        3:  177:    strcpy(str,store);
-        3:  178:    head = wlIns(head,str);
-        -:  179:  } // just because we added a word doesn't mean we're finished!
-       34:  180:  if (level < strlen(word) && word[level] == root->thisChar) {
-        -:  181:    // printf("we have a hit for %c!\n",word[level]);
-        6:  182:    distCompletionsN (root->child,word,store,level+1,head);
-       22:  183:  } else if (level >=strlen(word)) {
-        -:  184:    // printf("here");
-       15:  185:    distCompletionsN (root->child,word,store,level+1,head);
-        -:  186:    // since I add child first, it is in ORDER :)
-       15:  187:    distCompletionsN (root->sibling,word,store,level,head);
-        -:  188:  } else {
-        7:  189:    distCompletionsN (root->sibling,word,store,level,head);
-        -:  190:  } 
-        -:  191:  /* these three cases
-        -:  192:
-        -:  193:  */
-        -:  194:}
-        -:  195:// just to test out a few algorithms.
-        -:  196:struct wlnode* 
-        -:  197:wlIns(struct wlnode* head,char* word);
-        -:  198:void 
-        -:  199:insertWordR (struct dictEdge * node, char* word);
-        -:  200:bool
-        -:  201:dictLookupN (struct dictEdge* node,char* word) ;
-        -:  202:void
-        -:  203:edgeFree(struct dictEdge *node);
-        -:  204:struct dictEdge* dictEdgeNew(char thisChar);
-        -:  205:void 
-        -:  206:printDict(struct dictionary *dict);
-        -:  207:
-        -:  208:/* Initialise the dictionary structure
-        -:  209: */
-        -:  210:struct dictionary*
-        2:  211:dictInit () {
-        -:  212:  // we create a new dictionary and then we return it
-        2:  213:  struct dictionary* ndict = malloc(sizeof(struct dictionary));
-        2:  214:  assert(ndict != NULL); 
-        2:  215:  ndict->root = NULL;
-        2:  216:  return ndict;
-        -:  217:}
+        -:   40:  should've written it all iteratively
+        -:   41:*/
+        -:   42:
+        -:   43:struct wlnode* wlRev(struct wlnode*);
+        -:   44:void 
+        1:   45:perr(char error[]) {
+        -:   46:#define DEBUGP
+        -:   47:#ifdef DEBUGP
+        1:   48:  fprintf(stderr,"%s\n",error);
+        -:   49:#endif
+        1:   50:}
+        -:   51:
+        -:   52:/* 
+        -:   53:  unused functions
+        -:   54:  used as a basis for the final functions :)
+        -:   55:    */
+        -:   56:
+        -:   57:void printEdge(struct dictEdge* dnode, long n);
+    #####:   58:void printDict(struct dictionary* dict) {
+    #####:   59:  printEdge(dict->root,0);
+    #####:   60:}
+        -:   61:/* begining of true functions */
+        -:   62:
+        -:   63:// insert into slist and return the head
+        -:   64:struct wlnode* 
+        -:   65:wlIns(struct wlnode* head,char* word);
+        -:   66:
+        -:   67:// oops, typo :)
+        -:   68:struct wlnode*
+        -:   69:distCompletions (struct dictionary* dict,char* word);
+        -:   70:void
+        -:   71:distCompletionsN (struct dictEdge* root,char* word,char *store,
+        -:   72:  int level, struct wlnode* head);
+        -:   73:
+        -:   74:// converts all the items in a dictionary into a linked list of words
+        -:   75:// this isn't that bad
+        -:   76:void
+    #####:   77:dictToWlNew (struct dictEdge* root,char *store,
+        -:   78:  int level, struct wlnode* head) {
+    #####:   79:  if (root == NULL) 
+    #####:   80:    return;// terminating case :)
+    #####:   81:  assert(store != NULL); // store should be defined already
+    #####:   82:  int i = level + 2; 
+        -:   83:  // space for new char + null
+    #####:   84:  store[i-1] = 0;
+    #####:   85:  store[i-2] = root->thisChar;
+    #####:   86:  if (root->isTerminal == True) {
+    #####:   87:    char *str = malloc(sizeof(char)*(level + 2)); 
+    #####:   88:    assert(str != NULL); // we have enough memory
+    #####:   89:    strcpy(str,store); // copy everything
+    #####:   90:    wlIns(head,str);
+        -:   91:  } // do it in order :)
+    #####:   92:  dictToWlNew (root->child,store,level+1,head);
+    #####:   93:  dictToWlNew (root->sibling,store,level,head);
+        -:   94:}
+        -:   95:
+        -:   96:// Sorry about that, it's a bit dodgy the ordering
+        -:   97:struct wlnode*
+        1:   98:distCompletions (struct dictionary* dict,char* word) {
+        1:   99:  struct wlnode* a = wlIns(NULL,"");
+        -:  100:  char store[82];
+        1:  101:  store[0] = 0; // do I need this? // this is stupid
+        1:  102:  if (word[0] == 0) { // meaning that the word is blank
+    #####:  103:    dictToWlNew(dict->root,store,0,a);
+        -:  104:  }
+        -:  105:  else {
+        1:  106:    distCompletionsN(dict->root,word,store,0,a);
+        -:  107:  }
+        1:  108:  struct wlnode* re = a->next;
+        1:  109:  a->next = NULL;
+        1:  110:  free(a);
+        1:  111:  return re;
+        -:  112:}
+        -:  113:
+        -:  114:void
+        6:  115:distCompletionsN (struct dictEdge* root,char* word,char *store,
+        -:  116:  int level, struct wlnode* head) {
+        6:  117:  if (root == NULL) {
+        1:  118:    return; // if the root is null we are done!
+        -:  119:  }
+        5:  120:  assert(store != NULL); // since I declared it before
+        5:  121:  int i = level + 2; // the array size is strlen(word)+1
+        5:  122:  store[i-1] = 0;
+        5:  123:  store[i-2] = root->thisChar; 
+        -:  124:  // what this does is append root->thisChar to then end of stored string
+        -:  125:  // FIX
+        -:  126:
+        5:  127:  if (root->isTerminal == True) {
+        1:  128:    if (strlen(word) - 1 == level) {
+        1:  129:      if (word[level] == root->thisChar) {
+        1:  130:        char *str = malloc(sizeof(char)*(level + 2));
+        1:  131:        assert(str != NULL);
+        1:  132:        strcpy(str,store);
+        1:  133:        head = wlIns(head,str);
+        -:  134:      }
+        -:  135:    }
+        -:  136:  }
+        -:  137:
+        7:  138:  if (root->isTerminal == True // signifying end of word
+        6:  139:    && (word[level] == root->thisChar || level >= strlen(word)) 
+        1:  140:    && (level >= strlen(word) )) { 
+        -:  141:    
+    #####:  142:    if (strlen(store) == 0) {
+    #####:  143:      return; // since the string is empty, we don't add it
+        -:  144:    }
+        -:  145:    // printf("adding store %s\n",store);
+    #####:  146:    char *str = malloc(sizeof(char)*(level + 2));
+    #####:  147:    assert(str != NULL);
+    #####:  148:    strcpy(str,store);
+    #####:  149:    head = wlIns(head,str);
+        -:  150:  } // just because we added a word doesn't mean we're finished!
+        -:  151:
+        8:  152:  if (level < strlen(word) && word[level] == root->thisChar) {
+        -:  153:    // case what we're looking for is directly below
+        -:  154:    
+        3:  155:    distCompletionsN (root->child,word,store,level+1,head);
+        2:  156:  } else if (level >=strlen(word)) {
+        -:  157:    // if we've already 'made it' past checking the word
+        -:  158:    // level is 0 indexed, strlen starts at 1 (so to speak)
+        -:  159:    // hence the equality
+    #####:  160:    distCompletionsN (root->child,word,store,level+1,head);
+        -:  161:    // since I add child first, it is in ORDER :)
+    #####:  162:    distCompletionsN (root->sibling,word,store,level,head);
+        -:  163:  } else {
+        -:  164:    // go onto the next sibling then
+        2:  165:    distCompletionsN (root->sibling,word,store,level,head);
+        -:  166:  } 
+        -:  167:  /* these three cases
+        -:  168:
+        -:  169:  */
+        -:  170:}
+        -:  171:// just to test out a few algorithms.
+        -:  172:struct wlnode* 
+        -:  173:wlIns(struct wlnode* head,char* word);
+        -:  174:void 
+        -:  175:insertWordR (struct dictEdge * node, char* word);
+        -:  176:bool
+        -:  177:dictLookupN (struct dictEdge* node,char* word) ;
+        -:  178:void
+        -:  179:edgeFree(struct dictEdge *node);
+        -:  180:struct dictEdge* dictEdgeNew(char thisChar);
+        -:  181:void 
+        -:  182:printDict(struct dictionary *dict);
+        -:  183:
+        -:  184:/* Initialise the dictionary structure
+        -:  185: */
+        -:  186:struct dictionary*
+        1:  187:dictInit () {
+        -:  188:  // we create a new dictionary and then we return it
+        1:  189:  struct dictionary* ndict = malloc(sizeof(struct dictionary));
+        1:  190:  assert(ndict != NULL); 
+        1:  191:  ndict->root = NULL;
+        1:  192:  return ndict;
+        -:  193:}
+        -:  194:
+        -:  195:struct dictEdge* 
+       33:  196:dictEdgeNew(char thisChar) {
+       33:  197:  struct dictEdge *ndictEdge = malloc(sizeof(struct dictEdge));
+       33:  198:  assert(ndictEdge != NULL);
+       33:  199:  ndictEdge->thisChar = thisChar;
+       33:  200:  ndictEdge->child = NULL;
+       33:  201:  ndictEdge->sibling = NULL;
+       33:  202:  ndictEdge->isTerminal = 0;
+       33:  203:  return ndictEdge;
+        -:  204:}
+        -:  205:    
+    #####:  206:void printEdge(struct dictEdge* dnode, long n) {
+    #####:  207:  if (dnode == NULL) {
+    #####:  208:    return;
+        -:  209:  }
+        -:  210:  int i;
+    #####:  211:  for (i=0;i != n;++i)
+    #####:  212:    printf("  ");
+        -:  213:  
+    #####:  214:  if (dnode->isTerminal == True) {
+    #####:  215:    printf("\033[1;33m%c\033[m\n",dnode->thisChar);
+        -:  216:  } else {
+    #####:  217:    printf("%c\n",dnode->thisChar);
         -:  218:
-        -:  219:struct dictEdge* 
-       66:  220:dictEdgeNew(char thisChar) {
-       66:  221:  struct dictEdge *ndictEdge = malloc(sizeof(struct dictEdge));
-       66:  222:  assert(ndictEdge != NULL);
-       66:  223:  ndictEdge->thisChar = thisChar;
-       66:  224:  ndictEdge->child = NULL;
-       66:  225:  ndictEdge->sibling = NULL;
-       66:  226:  ndictEdge->isTerminal = 0;
-       66:  227:  return ndictEdge;
-        -:  228:}
-        -:  229:    
-    #####:  230:void printEdge(struct dictEdge* dnode, long n) {
-    #####:  231:  if (dnode == NULL) {
-    #####:  232:    return;
-        -:  233:  }
-        -:  234:  int i;
-    #####:  235:  for (i=0;i != n;++i)
-    #####:  236:    printf("  ");
-        -:  237:  
-    #####:  238:  if (dnode->isTerminal == True) {
-    #####:  239:    printf("\033[1;33m%c\033[m\n",dnode->thisChar);
-        -:  240:  } else {
-    #####:  241:    printf("%c\n",dnode->thisChar);
-        -:  242:
-        -:  243:  }
-    #####:  244:  printEdge(dnode->child, n+1); 
-    #####:  245:  printEdge(dnode->sibling,n);
-        -:  246:}
-        -:  247:
-        -:  248:/* Insert a single word into the dictionary 
-        -:  249: */
-        -:  250:void
-       16:  251:dictInsertWord (struct dictionary* dict, char* word) {
-        -:  252:  // assume I'm not in the list.
-       16:  253:  if (dict->root == NULL) {
-        2:  254:    dict->root = dictEdgeNew(word[0]);
-        -:  255:  }
-        -:  256:// todo this code still seems bugged like fuck
-        -:  257:  // oh my this is icky
-        -:  258:  // well, I suppose it's required though
-       16:  259:  if (dict->root->thisChar > word[0]) {
-        2:  260:    perr("noes :( fixing node");
-        2:  261:    struct dictEdge* newp = dictEdgeNew(word[0]);
-        2:  262:    newp->sibling = dict->root;
-        2:  263:    dict->root = newp;
-        -:  264:  } // TODO, make sure this won't leave any extra nodes
-        -:  265://  printf("comparing %d with %d\n",dict->root->thisChar,word[0]);
-       16:  266:  assert(dict->root->thisChar <= word[0]); // make sure that the root is okay :)
-       16:  267:  insertWordR (dict->root, word); 
-       16:  268:}
-        -:  269:
-        -:  270:
-        -:  271:// the amount of time this takes is dependant both on size of word and size of trie
-        -:  272:
-        -:  273:void 
-       50:  274:insertWordR (struct dictEdge * node, char* word) {
-       50:  275:  assert(node != NULL);
-        -:  276:  // oh I remember again, to prevent against sloppy code ;)
-        -:  277:  // passing a null edge is silly
-        -:  278:
-        -:  279:  /*
-        -:  280:  if (word[1] == 0) {
-        -:  281:    node->isTerminal = True;
-        -:  282:  } */
-        -:  283:  // FIX
-        -:  284:  // Forgot about insert in order
-        -:  285:  /*
-        -:  286:  if (word[0] == 0) {
-        -:  287:    // terminating
-        -:  288:    printf("a triggering\n");
-        -:  289:    node->isTerminal = True;
-        -:  290:    return;
-        -:  291:  }
-        -:  292:  */
-        -:  293:  // I do believe that kitten's algorithm was a lot better
-        -:  294:  //printf("input string-> %s\n",word);
-        -:  295:  //char first = word[0];
-       50:  296:  bool found = False;
-       50:  297:  struct dictEdge* roverPapa = NULL;
-        -:  298:  //stopping case, word[0] == \0 // this is a lie!
-        -:  299:
-       50:  300:  if (word[0] != '\0') {
-       50:  301:    struct dictEdge* rover = node;
-        -:  302:  
-       50:  303:    if (node->thisChar > word[0]) {
-    #####:  304:      perr("we have a fucking problem");
-    #####:  305:      assert(1 == 0);
-        -:  306:    }
-        -:  307:
-      170:  308:    while (rover != NULL && !found) {
-        -:  309:      // we search until we find a match or not
-        -:  310:// new
-       72:  311:      if (rover->thisChar > word[0]) {
-        -:  312:        // ie it's not in the list, since we assume it's ordered
-        -:  313:
-        -:  314:        // insert it in order
-        2:  315:        assert(roverPapa != NULL);
-        2:  316:        struct dictEdge* newp = dictEdgeNew(word[0]);
-        2:  317:        roverPapa->sibling = newp;
-        2:  318:        newp->sibling = rover;
-        -:  319:        
-        -:  320:        // recurse.
-        2:  321:        if (word[1] == 0) {
-    #####:  322:          newp->isTerminal = True;
-        -:  323:        } else {       
-        2:  324:          struct dictEdge* newcp = dictEdgeNew(word[1]);
-        2:  325:          newp->child = newcp;
-        2:  326:          insertWordR(newcp,&word[1]);
-        -:  327:        }
-        2:  328:        return;
-        -:  329:
-        -:  330:      }
-       70:  331:      if (rover->thisChar == word[0]) {
-       40:  332:        found = True;
-        -:  333:        // printf("FOUND YAY");
-        -:  334:      } else {
-       30:  335:        roverPapa = rover;
-       30:  336:        rover = rover->sibling;
-        -:  337:      }
-        -:  338:    }
-        -:  339:    // we add it to the end ;)
-       48:  340:    if (found == False) { // not found :) && not placed in order
-        8:  341:      fprintf(stderr,"not found with arg %s\n",word);
-        -:  342:      // just add the whole word in.
-        8:  343:      rover = node; 
-       22:  344:      while (rover->sibling != NULL) {
-        6:  345:        rover = rover->sibling;
-        -:  346:      }
-        8:  347:      rover->sibling = dictEdgeNew(word[0]);
-        8:  348:      node = rover->sibling;
-        -:  349:
-        8:  350:      int i = 1;
-       42:  351:      while (word[i] != 0) {
-       26:  352:        struct dictEdge* rover = node;
-        -:  353:        int j;
-        -:  354:        // terrible code
-        -:  355:        // TODO
-       70:  356:        for (j=0;j<i-1;j++) {
-       44:  357:          assert(rover->child != NULL);
-       44:  358:          rover = rover->child;
-        -:  359:        }
-       26:  360:        rover->child = dictEdgeNew(word[i]);      
-        -:  361:     //  printf("new child pointing to %p\n",rover->child);
-       26:  362:         ++i;
-       26:  363:         if (word[i] == '\0') {
-        8:  364:           rover->child->isTerminal = True;
-        -:  365:         }
-        -:  366:       }
-        8:  367:       if (i == 1) { // bug fix.
-        -:  368:       // we didn't enter loop
-        -:  369:       // then the node is the final element
-    #####:  370:         node->isTerminal = True;
-        -:  371:       } // seems to make sense to put this at the front :) 
-        -:  372:       // case for notentering the loop
-        -:  373:     }
-        -:  374:     else { 
-        -:  375:      // found == True
-        -:  376:      // looks like a bug here;
-       40:  377:      if (rover->child != NULL) {
-       10:  378:        if (word[1] == '\0') { 
-    #####:  379:           printf("HERE"); // tc3 goes here
-    #####:  380:           rover->isTerminal = True; 
-        -:  381:        }
-        -:  382:        else {
-        -:  383:          // new FIX
-        -:  384:          // inorderFix, create the node and set the pointer
-       10:  385:          if (rover->child->thisChar > word[1]) {
-        -:  386:            // we need to create
-        2:  387:            struct dictEdge* newp = dictEdgeNew(word[1]);
-        2:  388:            newp->sibling = rover->child;
-        2:  389:            rover->child = newp;
-        -:  390:          }
-       10:  391:          insertWordR(rover->child,&word[1]); 
-        -:  392:        }
-        -:  393:      }
-        -:  394:      else {
-        -:  395:        //printf("->>%s\n",word);
-       30:  396:        if (word[1] == '\0') { 
-        8:  397:           rover->isTerminal = True;
-        -:  398:        }
-        -:  399:        else {
-       22:  400:           rover->child = dictEdgeNew(word[1]);
-       22:  401:           insertWordR(rover->child,&word[1]);
-        -:  402:           // this could be done with a forloop
-        -:  403:           // since all we're doing is spawning children
-        -:  404:        }
-        -:  405:      }
-        -:  406:    }
-        -:  407:  }
-        -:  408:}
-        -:  409:
-        -:  410:/* Insert a list of words into the dictionary 
-        -:  411: */
-        -:  412:void
-    #####:  413:dictInsertWords (struct dictionary* dict, struct wlnode* words) {
-        -:  414:  // FIX
-    #####:  415:  while (words != NULL) {
-    #####:  416:    dictInsertWord(dict,words->word);
-    #####:  417:    words = words->next;
+        -:  219:  }
+    #####:  220:  printEdge(dnode->child, n+1); 
+    #####:  221:  printEdge(dnode->sibling,n);
+        -:  222:}
+        -:  223:
+        -:  224:/* Insert a single word into the dictionary 
+        -:  225: */
+        -:  226:void
+        8:  227:dictInsertWord (struct dictionary* dict, char* word) {
+        -:  228:  // assume I'm not in the list.
+        8:  229:  if (dict->root == NULL) {
+        1:  230:    dict->root = dictEdgeNew(word[0]);
+        -:  231:  }
+        -:  232:// todo this code still seems bugged like fuck
+        -:  233:  // oh my this is icky
+        -:  234:  // well, I suppose it's required though
+        8:  235:  if (dict->root->thisChar > word[0]) {
+        1:  236:    perr("noes :( fixing node");
+        1:  237:    struct dictEdge* newp = dictEdgeNew(word[0]);
+        1:  238:    newp->sibling = dict->root;
+        1:  239:    dict->root = newp;
+        -:  240:  } // TODO, make sure this won't leave any extra nodes
+        -:  241://  printf("comparing %d with %d\n",dict->root->thisChar,word[0]);
+        8:  242:  assert(dict->root->thisChar <= word[0]); // make sure that the root is okay :)
+        8:  243:  insertWordR (dict->root, word); 
+        8:  244:}
+        -:  245:
+        -:  246:
+        -:  247:// the amount of time this takes is dependant both on size of word and size of trie
+        -:  248:
+        -:  249:void 
+       25:  250:insertWordR (struct dictEdge * node, char* word) {
+       25:  251:  assert(node != NULL);
+        -:  252:  // oh I remember again, to prevent against sloppy code ;)
+        -:  253:  // passing a null edge is silly
+        -:  254:
+        -:  255:  /*
+        -:  256:  if (word[1] == 0) {
+        -:  257:    node->isTerminal = True;
+        -:  258:  } */
+        -:  259:  // FIX
+        -:  260:  // Forgot about insert in order
+        -:  261:  /*
+        -:  262:  if (word[0] == 0) {
+        -:  263:    // terminating
+        -:  264:    printf("a triggering\n");
+        -:  265:    node->isTerminal = True;
+        -:  266:    return;
+        -:  267:  }
+        -:  268:  */
+        -:  269:  // I do believe that kitten's algorithm was a lot better
+        -:  270:  //printf("input string-> %s\n",word);
+        -:  271:  //char first = word[0];
+       25:  272:  bool found = False;
+       25:  273:  struct dictEdge* roverPapa = NULL;
+        -:  274:  //stopping case, word[0] == \0 // this is a lie!
+        -:  275:
+       25:  276:  if (word[0] != '\0') {
+       25:  277:    struct dictEdge* rover = node;
+        -:  278:  
+       25:  279:    if (node->thisChar > word[0]) {
+    #####:  280:      perr("we have a fucking problem");
+    #####:  281:      assert(1 == 0);
+        -:  282:    }
+        -:  283:
+       85:  284:    while (rover != NULL && !found) {
+        -:  285:      // we search until we find a match or not
+        -:  286:// new
+       36:  287:      if (rover->thisChar > word[0]) {
+        -:  288:        // ie it's not in the list, since we assume it's ordered
+        -:  289:
+        -:  290:        // insert it in order
+        1:  291:        assert(roverPapa != NULL);
+        1:  292:        struct dictEdge* newp = dictEdgeNew(word[0]);
+        1:  293:        roverPapa->sibling = newp;
+        1:  294:        newp->sibling = rover;
+        -:  295:        
+        -:  296:        // recurse.
+        1:  297:        if (word[1] == 0) {
+    #####:  298:          newp->isTerminal = True;
+        -:  299:        } else {       
+        1:  300:          struct dictEdge* newcp = dictEdgeNew(word[1]);
+        1:  301:          newp->child = newcp;
+        1:  302:          insertWordR(newcp,&word[1]);
+        -:  303:        }
+        1:  304:        return;
+        -:  305:
+        -:  306:      }
+       35:  307:      if (rover->thisChar == word[0]) {
+       20:  308:        found = True;
+        -:  309:        // printf("FOUND YAY");
+        -:  310:      } else {
+       15:  311:        roverPapa = rover;
+       15:  312:        rover = rover->sibling;
+        -:  313:      }
+        -:  314:    }
+        -:  315:    // we add it to the end ;)
+       24:  316:    if (found == False) { // not found :) && not placed in order
+        4:  317:      fprintf(stderr,"not found with arg %s\n",word);
+        -:  318:      // just add the whole word in.
+        4:  319:      rover = node; 
+       11:  320:      while (rover->sibling != NULL) {
+        3:  321:        rover = rover->sibling;
+        -:  322:      }
+        4:  323:      rover->sibling = dictEdgeNew(word[0]);
+        4:  324:      node = rover->sibling;
+        -:  325:
+        4:  326:      int i = 1;
+       21:  327:      while (word[i] != 0) {
+       13:  328:        struct dictEdge* rover = node;
+        -:  329:        int j;
+        -:  330:        // terrible code
+        -:  331:        // TODO
+       35:  332:        for (j=0;j<i-1;j++) {
+       22:  333:          assert(rover->child != NULL);
+       22:  334:          rover = rover->child;
+        -:  335:        }
+       13:  336:        rover->child = dictEdgeNew(word[i]);      
+        -:  337:     //  printf("new child pointing to %p\n",rover->child);
+       13:  338:         ++i;
+       13:  339:         if (word[i] == '\0') {
+        4:  340:           rover->child->isTerminal = True;
+        -:  341:         }
+        -:  342:       }
+        4:  343:       if (i == 1) { // bug fix.
+        -:  344:       // we didn't enter loop
+        -:  345:       // then the node is the final element
+    #####:  346:         node->isTerminal = True;
+        -:  347:       } // seems to make sense to put this at the front :) 
+        -:  348:       // case for notentering the loop
+        -:  349:     }
+        -:  350:     else { 
+        -:  351:      // found == True
+        -:  352:      // looks like a bug here;
+       20:  353:      if (rover->child != NULL) {
+        5:  354:        if (word[1] == '\0') { 
+    #####:  355:           printf("HERE"); // tc3 goes here
+    #####:  356:           rover->isTerminal = True; 
+        -:  357:        }
+        -:  358:        else {
+        -:  359:          // new FIX
+        -:  360:          // inorderFix, create the node and set the pointer
+        5:  361:          if (rover->child->thisChar > word[1]) {
+        -:  362:            // we need to create
+        1:  363:            struct dictEdge* newp = dictEdgeNew(word[1]);
+        1:  364:            newp->sibling = rover->child;
+        1:  365:            rover->child = newp;
+        -:  366:          }
+        5:  367:          insertWordR(rover->child,&word[1]); 
+        -:  368:        }
+        -:  369:      }
+        -:  370:      else {
+        -:  371:        //printf("->>%s\n",word);
+       15:  372:        if (word[1] == '\0') { 
+        4:  373:           rover->isTerminal = True;
+        -:  374:        }
+        -:  375:        else {
+       11:  376:           rover->child = dictEdgeNew(word[1]);
+       11:  377:           insertWordR(rover->child,&word[1]);
+        -:  378:           // this could be done with a forloop
+        -:  379:           // since all we're doing is spawning children
+        -:  380:        }
+        -:  381:      }
+        -:  382:    }
+        -:  383:  }
+        -:  384:}
+        -:  385:
+        -:  386:/* Insert a list of words into the dictionary 
+        -:  387: */
+        -:  388:void
+    #####:  389:dictInsertWords (struct dictionary* dict, struct wlnode* words) {
+    #####:  390:  while (words != NULL) {
+    #####:  391:    dictInsertWord(dict,words->word); // icky
+    #####:  392:    words = words->next;
+        -:  393:  }
+    #####:  394:}
+        -:  395:
+        -:  396:/* Check whether a given word is in the dictionary
+        -:  397: */
+        -:  398:bool
+    #####:  399:dictLookup (struct dictionary* dict, char* word) {
+        -:  400:  // is there a more efficient way.
+        -:  401:  // by using two loops, this can be implemented
+        -:  402:  // thanks to Ian Craig who showed me :)
+    #####:  403:  assert(dict != NULL);
+    #####:  404:  return dictLookupN(dict->root,word);
+        -:  405:}
+        -:  406:
+        -:  407:// n for internal? new?
+        -:  408:bool
+    #####:  409:dictLookupN (struct dictEdge* node,char* word) {
+        -:  410:  // todo this code still seems bugged like fuck
+        -:  411:  // terminating case. // dictionary/word is NULL/\0
+    #####:  412:  if (node == NULL) {
+        -:  413:    // very special case, dictionary is empty, clearly not in dictionary
+    #####:  414:    return False;
+        -:  415:  }
+    #####:  416:  if (word[0] == 0) { // shouldn't really go in here... 
+    #####:  417:    return False;
         -:  418:  }
-    #####:  419:}
-        -:  420:
-        -:  421:/* Check whether a given word is in the dictionary
-        -:  422: */
-        -:  423:bool
-    #####:  424:dictLookup (struct dictionary* dict, char* word) {
-        -:  425:  // is there a more efficient way.
-        -:  426:  // by using two loops, this can be implemented
-        -:  427:  // thanks to Ian Craig who showed me :)
-    #####:  428:  assert(dict != NULL);
-    #####:  429:  return dictLookupN(dict->root,word);
-        -:  430:}
-        -:  431:
-        -:  432:// n for internal? new?
-        -:  433:bool
-    #####:  434:dictLookupN (struct dictEdge* node,char* word) {
-        -:  435:  // todo this code still seems bugged like fuck
-        -:  436:  // terminating case. // dictionary/word is NULL/\0
-    #####:  437:  if (node == NULL) {
-        -:  438:    // very special case, dictionary is empty, clearly not in dictionary
-    #####:  439:    return False;
-        -:  440:  }
-    #####:  441:  if (word[0] == 0) { // shouldn't really go in here... 
-    #####:  442:    return False;
-        -:  443:  }
-        -:  444:
-    #####:  445:  if (word[1] == '\0') {  // if it's the last letter
-    #####:  446:      struct dictEdge *rover = node;
-        -:  447:      //printf("searching for %c %c\n",word[0],rover->thisChar);
-        -:  448:      // while (word[0] < rover->thisChar && rover->sibling != NULL) 
-        -:  449:      // while (rover->sibling != NULL && word[0] < rover->thisChar) // damn I had this, it's broken so badly 
-    #####:  450:      while (rover->sibling != NULL && word[0] > rover->thisChar) 
-        -:  451:      {
-        -:  452:        // and then it took me a while to figure why it's rover->sibling not rover
-        -:  453:        // wow, terrible coding, I didn't even think of the first 
-        -:  454:        // check
-        -:  455:        //printf("PASS\n");
-    #####:  456:        rover = rover->sibling;
-        -:  457:      }
-    #####:  458:      if (word[0] == rover->thisChar && rover->isTerminal == True) {
-    #####:  459:        return True;
-        -:  460:      }
-        -:  461:      // bugged here
-    #####:  462:      return False;
-        -:  463:  }
-    #####:  464:  struct dictEdge *rover = node;
-    #####:  465:  while (rover != NULL) { 
-    #####:  466:    if (word[0] == rover->thisChar) {
-        -:  467:      // if we are here we know that word[1] != 0
-        -:  468:      // therefore we have not finished
-        -:  469:      // rover child could be null
-    #####:  470:      if (rover->child == NULL) {
-    #####:  471:        return False; // no more children, therefore it can't be found
-        -:  472:      }
-    #####:  473:      return dictLookupN(rover->child,&word[1]);
-        -:  474:    } else {
-    #####:  475:      rover = rover->sibling;
-        -:  476:    }
-        -:  477:  }
-        -:  478:  // if it gets here it means no matches in the siblings
-    #####:  479:  return False;
-        -:  480:}
-        -:  481:
-        -:  482:bool
-    #####:  483:dictLookupIter (struct dictionary* dict, char* word) {
-    #####:  484:  int i = 0; // loop through elements of the word
-    #####:  485:  struct dictEdge* node = dict->root;
-        -:  486:  struct dictEdge* rover;
-    #####:  487:  while (i != strlen(word)) {
-    #####:  488:    for (rover = node;
-        -:  489:      rover != NULL;
-    #####:  490:      rover = rover->sibling) {
-        -:  491:      // if equal
-    #####:  492:      if (word[i] == rover->thisChar) {
-    #####:  493:        if (word[i + 1] == 0) {
-    #####:  494:          if (rover->isTerminal) {
-    #####:  495:            return True;
-        -:  496:          }
-        -:  497:        }
-    #####:  498:        node = rover->child;
-    #####:  499:        break; // break out of loop
-        -:  500:      }
-        -:  501:      // if we've reached the end of the word and we haven't found it then
-    #####:  502:      if (rover->sibling == NULL || word[i] < rover->thisChar) {
-        -:  503:        // don't really need the second one
-    #####:  504:        return False;
-        -:  505:      }
-        -:  506:    }
-    #####:  507:    ++i; // look up the next letter with parent node
-        -:  508:  }
-    #####:  509:  return False;
-        -:  510:}
-        -:  511:
-        -:  512:/* Extract all words in the dictionary (the order does not matter).
-        -:  513: * Should return them in alphabetical order
-        -:  514: * Complexity: see constraint in the assignment specification.
-        -:  515: */
-        -:  516:struct wlnode*
-        2:  517:dictCompletions (struct dictionary* dict, char* word) {
-        2:  518:  return wlRev(distCompletions(dict,word)); // fun fix
-        -:  519:  return distCompletions(dict,word);
-        -:  520:}
-        -:  521:
-        -:  522:/* testing functions for the above */
-        -:  523:void
-    #####:  524:printwl (struct wlnode* wl) {
-        -:  525:   struct wlnode * cur;
-    #####:  526:   for (cur = wl; NULL != cur; cur =  cur->next)
-    #####:  527:      fprintf (stdout, "%s\n", cur->word);
-        -:  528:#if 0
-        -:  529:  /*
-        -:  530:   struct wlnode * cur;
-        -:  531:   for (cur = wl; NULL != cur; cur =  cur->next)
-        -:  532:      fprintf (stdout, "%s\n", cur->word);
-        -:  533:      */
-        -:  534:   struct wlnode * cur;
-        -:  535:   cur = wl;
-        -:  536:   //while (cur != NULL && cur != 0x65646e61) {
-        -:  537:   while (cur != NULL) { 
-        -:  538:       cur = cur->next;
-        -:  539:       printf("cur %p\n",cur);
-        -:  540:   }
-        -:  541:   //return;
-        -:  542:   //for (cur = wl; NULL != cur && cur != 0x65646e61; cur = cur->next)
-        -:  543:   for (cur = wl; NULL != cur; cur = cur->next)
-        -:  544:     fprintf (stdout, "%s %p\n", cur->word, cur->word);
-        -:  545:#endif
-    #####:  546:}
-        -:  547:
-        -:  548:
-        -:  549:/* Erase all dictionary entries and release all memory allocated for the
-        -:  550: * dictionary.
-        -:  551: */
-        -:  552:// Complexity O(n) // linearly dependant on size of trie
-        -:  553:void
-        2:  554:dictFree (struct dictionary* dict) {
-        -:  555:  // the plan, free all the nodes then free the dictionary :)
-        2:  556:  edgeFree(dict->root);
-        2:  557:  free(dict); // freeing the dictionary is easy
-        2:  558:}
-        -:  559:
-        -:  560:// internal call
-        -:  561:// recursively free all the nodes
-        -:  562:// Complexity O(n) // linearly dependant on size of trie
-        -:  563:void
-      134:  564:edgeFree(struct dictEdge *node) {
-      134:  565:  if (node != NULL) {   
-       66:  566:    edgeFree(node->sibling);
-       66:  567:    edgeFree(node->child);
-       66:  568:    node->sibling = NULL;
-       66:  569:    node->child = NULL;
-       66:  570:    free(node);
-        -:  571:  }
-      134:  572:}
-        -:  573:
-        -:  574:/* Return the root of the trie (i.e. dictionary). 
-        -:  575: * If the dictionary is empty, then return NULL. 
-        -:  576: * Otherwise, return the root of the trie. 
-        -:  577: */ // complexity O(1)
-        -:  578:struct dictEdge*
-    #####:  579:dictGetRoot (struct dictionary* dict) { 
-    #####:  580:  return dict->root;
+        -:  419:
+    #####:  420:  if (word[1] == '\0') {  // if it's the last letter
+    #####:  421:      struct dictEdge *rover = node;
+        -:  422:      //printf("searching for %c %c\n",word[0],rover->thisChar);
+        -:  423:      // while (word[0] < rover->thisChar && rover->sibling != NULL) 
+        -:  424:      // while (rover->sibling != NULL && word[0] < rover->thisChar) // damn I had this, it's broken so badly 
+    #####:  425:      while (rover->sibling != NULL && word[0] > rover->thisChar) 
+        -:  426:      {
+        -:  427:        // and then it took me a while to figure why it's rover->sibling not rover
+        -:  428:        // wow, terrible coding, I didn't even think of the first 
+        -:  429:        // check
+        -:  430:        //printf("PASS\n");
+    #####:  431:        rover = rover->sibling;
+        -:  432:      }
+    #####:  433:      if (word[0] == rover->thisChar && rover->isTerminal == True) {
+    #####:  434:        return True;
+        -:  435:      }
+        -:  436:      // bugged here
+    #####:  437:      return False;
+        -:  438:  }
+    #####:  439:  struct dictEdge *rover = node;
+    #####:  440:  while (rover != NULL) { 
+    #####:  441:    if (word[0] == rover->thisChar) {
+        -:  442:      // if we are here we know that word[1] != 0
+        -:  443:      // therefore we have not finished
+        -:  444:      // rover child could be null
+    #####:  445:      if (rover->child == NULL) {
+    #####:  446:        return False; // no more children, therefore it can't be found
+        -:  447:      }
+    #####:  448:      return dictLookupN(rover->child,&word[1]); // move to the subproblem :)
+        -:  449:    } else {
+    #####:  450:      rover = rover->sibling;
+        -:  451:    }
+        -:  452:  }
+        -:  453:  // if it gets here it means no matches in the siblings
+    #####:  454:  return False;
+        -:  455:}
+        -:  456:
+        -:  457:bool
+    #####:  458:dictLookupIter (struct dictionary* dict, char* word) {
+    #####:  459:  int i = 0; // loop through elements of the word (counts what letter we're on
+    #####:  460:  struct dictEdge* node = dict->root;
+        -:  461:  struct dictEdge* rover;
+    #####:  462:  while (i != strlen(word)) {
+    #####:  463:    for (rover = node;
+        -:  464:      rover != NULL;
+    #####:  465:      rover = rover->sibling) {
+    #####:  466:      if (word[i] == rover->thisChar) { // if equal
+    #####:  467:        if (word[i + 1] == 0) { 
+    #####:  468:          if (rover->isTerminal) {
+    #####:  469:            return True;
+        -:  470:          }
+        -:  471:        }
+    #####:  472:        node = rover->child;
+    #####:  473:        break; // break out of loop
+        -:  474:      }
+        -:  475:      // if we've reached the end of the word and we haven't found it then
+    #####:  476:      if (rover->sibling == NULL || word[i] < rover->thisChar) {
+        -:  477:        // don't really need the second one but saves time
+    #####:  478:        return False;
+        -:  479:      }
+        -:  480:    }
+    #####:  481:    ++i; // look up the next letter with parent node
+        -:  482:  }
+    #####:  483:  return False;
+        -:  484:}
+        -:  485:
+        -:  486:/* Extract all words in the dictionary (the order does not matter).
+        -:  487: * Should return them in alphabetical order
+        -:  488: * Complexity: see constraint in the assignment specification.
+        -:  489: */
+        -:  490:struct wlnode*
+        1:  491:dictCompletions (struct dictionary* dict, char* word) {
+        1:  492:  return wlRev(distCompletions(dict,word)); // fun fix
+        -:  493:  // return distCompletions(dict,word);
+        -:  494:}
+        -:  495:
+        -:  496:/* testing functions for the above */
+        -:  497:void
+    #####:  498:printwl (struct wlnode* wl) {
+        -:  499:   struct wlnode * cur;
+    #####:  500:   for (cur = wl; NULL != cur; cur =  cur->next)
+    #####:  501:      fprintf (stdout, "%s\n", cur->word);
+    #####:  502:}
+        -:  503:
+        -:  504:/* Erase all dictionary entries and release all memory allocated for the
+        -:  505: * dictionary.
+        -:  506: */
+        -:  507:// Complexity O(n) // linearly dependant on size of trie
+        -:  508:void
+        1:  509:dictFree (struct dictionary* dict) {
+        -:  510:  // free all the nodes then free the dictionary
+        1:  511:  edgeFree(dict->root);
+        1:  512:  dict->root = NULL;
+        1:  513:  free(dict); // freeing the dictionary is easy
+        1:  514:}
+        -:  515:
+        -:  516:// recursively free all the nodes
+        -:  517:// Complexity O(n) // linearly dependant on size of trie
+        -:  518:void
+       67:  519:edgeFree(struct dictEdge *node) {
+       67:  520:  if (node != NULL) {   
+       33:  521:    edgeFree(node->sibling);
+       33:  522:    edgeFree(node->child);
+       33:  523:    node->sibling = NULL; // null out the pointers
+       33:  524:    node->child = NULL;
+       33:  525:    free(node);
+        -:  526:  }
+       67:  527:}
+        -:  528:
+        -:  529:/* Return the root of the trie (i.e. dictionary). 
+        -:  530: * If the dictionary is empty, then return NULL. 
+        -:  531: * Otherwise, return the root of the trie. 
+        -:  532: */ // complexity O(1)
+        -:  533:struct dictEdge*
+    #####:  534:dictGetRoot (struct dictionary* dict) { 
+    #####:  535:  return dict->root;
+        -:  536:}
+        -:  537:
+        -:  538:// word list functions below :)
+        -:  539:/* This function does NOT do what it says on the tin */
+        -:  540:// due to the fact that the initial complexity was O(n)
+        -:  541:// Complexity, O(1)
+        -:  542:// I was thinking of moving the mallocing to this function but then thought
+        -:  543:// I might break something
+        -:  544:/* This function inserts a word by reference in the second position, (or first if wlnode is NULL */
+        -:  545:struct wlnode* 
+        4:  546:wlIns (struct wlnode* wl, char* word) {
+        4:  547:  struct wlnode* new = malloc(sizeof(struct wlnode));
+        4:  548:  assert(new != NULL);
+        -:  549:  // since we store the first node with dictCompletion
+        4:  550:  new->word = word;
+        4:  551:  if (wl == NULL) {
+        3:  552:    new->next = wl;
+        3:  553:    wl = new;
+        -:  554:  }
+        -:  555:  else {
+        1:  556:    new->next = wl->next;
+        1:  557:    wl->next = new;
+        -:  558:  }
+        4:  559:  return wl;
+        -:  560:}
+        -:  561:
+        -:  562:// Operation Complexity O(n)
+        -:  563:// Space Requirement, O(1)
+        -:  564:// In place reversing of a linked list
+        -:  565:struct wlnode* 
+        2:  566:wlRev(struct wlnode* wl) {
+        -:  567:  // done in lab 1
+        2:  568:  struct wlnode* new = wlIns(NULL,"");
+        2:  569:  struct wlnode* rover = wl;
+        5:  570:  while (rover != NULL) {
+        -:  571:    // do I get better performance if I store this variable outside the loop?
+        1:  572:    struct wlnode* store = rover->next; 
+        1:  573:    rover->next = new->next;
+        1:  574:    new->next = rover;
+        1:  575:    rover = store; 
+        -:  576:  }
+        2:  577:  rover = new->next; // saves defining another variable :)
+        2:  578:  new->next = NULL;
+        2:  579:  free(new);
+        2:  580:  return rover;
         -:  581:}
         -:  582:
-        -:  583:// word list functions below :)
-        -:  584:/*
-        -:  585:struct wlnode* 
-        -:  586:wlIns (struct wlnode* wl, char* word) {
-        -:  587:  struct wlnode* new = malloc(sizeof(struct wlnode));
-        -:  588:  // something about this routine looks strange to me :$
-        -:  589:  assert(new != NULL);
-        -:  590:  new->word = word;
-        -:  591:  new->next = NULL;
-        -:  592:  if (wl == NULL) {
-        -:  593:    wl = new;
-        -:  594:  }
-        -:  595:  else {
-        -:  596:    struct wlnode* rover = wl; // coming back to this, I
-        -:  597:    // was just thinking, what the heck am I doing here ;D
-        -:  598:    // since there was no requirement for it to be ordered
-        -:  599:    while (rover->next != NULL) {
-        -:  600:      rover = rover->next;
-        -:  601:    }
-        -:  602:    rover->next = new;
-        -:  603:  }
-        -:  604:  return wl;
-        -:  605:}*/
-        -:  606:
-        -:  607:/* This function does NOT do what it says on the tin */
-        -:  608:// due to the fact that the initial complexity was O(n)
-        -:  609:// Complexity, O(1)
-        -:  610:// I was thinking of moving the mallocing to this function but then thought
-        -:  611:// I might break something
-        -:  612:/* This function inserts a word by reference in the second position, (or first if wlnode is NULL */
-        -:  613:struct wlnode* 
-       10:  614:wlIns (struct wlnode* wl, char* word) {
-       10:  615:  struct wlnode* new = malloc(sizeof(struct wlnode));
-       10:  616:  assert(new != NULL);
-        -:  617:  // since we store the first node with dictCompletion
-       10:  618:  new->word = word;
-       10:  619:  if (wl == NULL) {
-        6:  620:    new->next = wl;
-        6:  621:    wl = new;
-        -:  622:  }
-        -:  623:  else {
-        4:  624:    new->next = wl->next;
-        4:  625:    wl->next = new;
-        -:  626:  }
-       10:  627:  return wl;
-        -:  628:}
-        -:  629:// Operation Complexity O(n)
-        -:  630:// Space Requirement, O(1)
-        -:  631:// In place reversing of a linked list
-        4:  632:struct wlnode* wlRev(struct wlnode* wl) {
-        -:  633:  // done in lab 1
-        4:  634:  struct wlnode* new = wlIns(NULL,"");
-        4:  635:  struct wlnode* rover = wl;
-       12:  636:  while (rover != NULL) {
-        4:  637:    struct wlnode* store = rover->next; 
-        -:  638:      // do I get better performance if I store this variable outside the loop?
-        4:  639:    rover->next = new->next;
-        4:  640:    new->next = rover;
-        4:  641:    rover = store; 
-        -:  642:  }
-        4:  643:  rover = new->next; // saves defining another variable :)
-        4:  644:  new->next = NULL;
-        4:  645:  free(new);
-        4:  646:  return rover;
-        -:  647:}
-        -:  648:
-        -:  649://unused
-        -:  650:// Complexity O(n)
-        -:  651:void
-    #####:  652:wlfree (struct wlnode* wl) {
-    #####:  653:  if (wl == NULL) {
-    #####:  654:    return;
-        -:  655:  }
-    #####:  656:  wlfree(wl->next);
-    #####:  657:  free(wl);
-        -:  658:}
