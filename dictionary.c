@@ -41,26 +41,28 @@
 */
 
 struct wlnode* wlRev(struct wlnode*);
-void 
-perr(char error[]) {
-#define DEBUGP
-#ifdef DEBUGP
-  fprintf(stderr,"%s\n",error);
-#endif
-}
-
-/* 
-  unused functions
-  used as a basis for the final functions :)
-    */
-
 void printEdge(struct dictEdge* dnode, long n);
 void printDict(struct dictionary* dict) {
   printEdge(dict->root,0);
 }
-/* begining of true functions */
+void printEdge(struct dictEdge* dnode, long n) {
+  int i;
+  if (dnode == NULL) {
+    return;
+  }
+  for (i=0;i != n;++i)
+    printf("  ");
+  if (dnode->isTerminal == True) {
+    printf("\033[1;33m%c\033[m\n",dnode->thisChar);
+  } else {
+    printf("%c\n",dnode->thisChar);
 
-// insert into slist and return the head
+  }
+  printEdge(dnode->child, n+1); 
+  printEdge(dnode->sibling,n);
+}
+
+// insert into wlist and return the head
 struct wlnode* 
 wlIns(struct wlnode* head,char* word);
 
@@ -202,24 +204,6 @@ dictEdgeNew(char thisChar) {
   return ndictEdge;
 }
     
-void printEdge(struct dictEdge* dnode, long n) {
-  if (dnode == NULL) {
-    return;
-  }
-  int i;
-  for (i=0;i != n;++i)
-    printf("  ");
-  
-  if (dnode->isTerminal == True) {
-    printf("\033[1;33m%c\033[m\n",dnode->thisChar);
-  } else {
-    printf("%c\n",dnode->thisChar);
-
-  }
-  printEdge(dnode->child, n+1); 
-  printEdge(dnode->sibling,n);
-}
-
 /* Insert a single word into the dictionary 
  */
 void
@@ -232,12 +216,10 @@ dictInsertWord (struct dictionary* dict, char* word) {
   // oh my this is icky
   // well, I suppose it's required though
   if (dict->root->thisChar > word[0]) {
-    perr("noes :( fixing node");
     struct dictEdge* newp = dictEdgeNew(word[0]);
     newp->sibling = dict->root;
     dict->root = newp;
-  } // TODO, make sure this won't leave any extra nodes
-//  printf("comparing %d with %d\n",dict->root->thisChar,word[0]);
+  } 
   assert(dict->root->thisChar <= word[0]); // make sure that the root is okay :)
   insertWordR (dict->root, word); 
 }
@@ -250,45 +232,23 @@ insertWordR (struct dictEdge * node, char* word) {
   assert(node != NULL);
   // oh I remember again, to prevent against sloppy code ;)
   // passing a null edge is silly
-
-  /*
-  if (word[1] == 0) {
-    node->isTerminal = True;
-  } */
-  // FIX
-  // Forgot about insert in order
-  /*
-  if (word[0] == 0) {
-    // terminating
-    printf("a triggering\n");
-    node->isTerminal = True;
-    return;
-  }
-  */
-  // I do believe that kitten's algorithm was a lot better
-  //printf("input string-> %s\n",word);
-  //char first = word[0];
-  bool found = False;
+  // should've done this iteratively
+  bool found = False; // since I need to break out two levels
   struct dictEdge* roverPapa = NULL;
-  //stopping case, word[0] == \0 // this is a lie!
-
   if (word[0] != '\0') {
     struct dictEdge* rover = node;
-  
-    if (node->thisChar > word[0]) {
-      perr("we have a fucking problem");
-      assert(1 == 0);
+    if (node->thisChar > word[0]) { // just checking the structure
+      assert (node->thisChar <= word[0]);
     }
-
     while (rover != NULL && !found) {
       // we search until we find a match or not
-// new
+      // if we've found the place to put it
       if (rover->thisChar > word[0]) {
         // ie it's not in the list, since we assume it's ordered
-
         // insert it in order
         assert(roverPapa != NULL);
         struct dictEdge* newp = dictEdgeNew(word[0]);
+        // dodgy, I meant roverYoungerSibling
         roverPapa->sibling = newp;
         newp->sibling = rover;
         
@@ -296,24 +256,23 @@ insertWordR (struct dictEdge * node, char* word) {
         if (word[1] == 0) {
           newp->isTerminal = True;
         } else {       
+          // since we added a new node, it has no children, we make one :)
           struct dictEdge* newcp = dictEdgeNew(word[1]);
           newp->child = newcp;
           insertWordR(newcp,&word[1]);
         }
         return;
-
       }
       if (rover->thisChar == word[0]) {
-        found = True;
-        // printf("FOUND YAY");
+        found = True; // we've found the word, and rover now holds this
       } else {
         roverPapa = rover;
         rover = rover->sibling;
       }
     }
-    // we add it to the end ;)
+    // we add it to the end of the siblingsList ;)
     if (found == False) { // not found :) && not placed in order
-      fprintf(stderr,"not found with arg %s\n",word);
+      // fprintf(stderr,"not found with arg %s\n",word);
       // just add the whole word in.
       rover = node; 
       while (rover->sibling != NULL) {
@@ -323,42 +282,33 @@ insertWordR (struct dictEdge * node, char* word) {
       node = rover->sibling;
 
       int i = 1;
+      struct dictEdge* rover = node;
       while (word[i] != 0) {
-        struct dictEdge* rover = node;
-        int j;
-        // terrible code
-        // TODO
-        for (j=0;j<i-1;j++) {
-          assert(rover->child != NULL);
-          rover = rover->child;
-        }
-        rover->child = dictEdgeNew(word[i]);      
-     //  printf("new child pointing to %p\n",rover->child);
+         rover->child = dictEdgeNew(word[i]);      
          ++i;
          if (word[i] == '\0') {
            rover->child->isTerminal = True;
          }
+         rover = rover->child;
        }
-       if (i == 1) { // bug fix.
+       if (i == 1) { 
        // we didn't enter loop
        // then the node is the final element
          node->isTerminal = True;
        } // seems to make sense to put this at the front :) 
        // case for notentering the loop
+       // could just use, rover->isTerminal = True it 'should' work
      }
      else { 
       // found == True
-      // looks like a bug here;
       if (rover->child != NULL) {
         if (word[1] == '\0') { 
-           printf("HERE"); // tc3 goes here
            rover->isTerminal = True; 
         }
         else {
-          // new FIX
           // inorderFix, create the node and set the pointer
           if (rover->child->thisChar > word[1]) {
-            // we need to create
+            // if we need to insert it at the beginning
             struct dictEdge* newp = dictEdgeNew(word[1]);
             newp->sibling = rover->child;
             rover->child = newp;
@@ -367,7 +317,6 @@ insertWordR (struct dictEdge * node, char* word) {
         }
       }
       else {
-        //printf("->>%s\n",word);
         if (word[1] == '\0') { 
            rover->isTerminal = True;
         }
@@ -399,7 +348,9 @@ dictLookup (struct dictionary* dict, char* word) {
   // is there a more efficient way.
   // by using two loops, this can be implemented
   // thanks to Ian Craig who showed me :)
-  assert(dict != NULL);
+  if (dict == NULL) {
+    return False; // or should I throw an error?
+  }
   return dictLookupN(dict->root,word);
 }
 
@@ -423,24 +374,18 @@ dictLookupN (struct dictEdge* node,char* word) {
       // while (rover->sibling != NULL && word[0] < rover->thisChar) // damn I had this, it's broken so badly 
       while (rover->sibling != NULL && word[0] > rover->thisChar) 
       {
-        // and then it took me a while to figure why it's rover->sibling not rover
-        // wow, terrible coding, I didn't even think of the first 
-        // check
-        //printf("PASS\n");
         rover = rover->sibling;
       }
       if (word[0] == rover->thisChar && rover->isTerminal == True) {
         return True;
       }
-      // bugged here
       return False;
   }
   struct dictEdge *rover = node;
-  while (rover != NULL) { 
+  while (rover != NULL) { // could be 'optimized'
     if (word[0] == rover->thisChar) {
       // if we are here we know that word[1] != 0
       // therefore we have not finished
-      // rover child could be null
       if (rover->child == NULL) {
         return False; // no more children, therefore it can't be found
       }
