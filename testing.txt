@@ -1,29 +1,18 @@
-placeholder
-test plan.
-
 Sat Dec 11 12:54:11 EST 2010
 Firstly, create a print function
 Then, create an insert function, and thus these two functions can be tested ;)
 
 create inorder and preorder print :)
 such that the tree structure can be recreated.
-
 try use ANSI CODES for bold to indicate ends of words :)
-
 
 I have written a function to print all the list words ;)
 // not sure about analysing the complexity...
 but yeah, it just pretty much does extract(root,"");
 
-
-
-
-
 Tue Dec 14 23:40:03 EST 2010
 well, I figured out what output bugged it and put it into the main ;)
 and slowly testing all the functions
-
-
 
 Fri Dec 17 14:50:10 EST 2010
 To test the fact that the nodes are inserted in Order
@@ -97,3 +86,107 @@ Create words with Siblings ( to test lookup )
 tc6
 Aim, to coverage test distCompletionsN
 As well as take all cases
+
+
+tc7
+make sure everything works
+abd
+aba // insert before
+abe // insert after
+abc // insert inbetween
+acd
+aca 
+ace
+acf // extend the data structure a bit
+
+Labb // lookup something in between
+Labf
+
+Plan, I had modified
+words.c to Lookup words that started with L
+(to look at my modified words.c https://github.com/chid/dictionary/raw/master/words.c)
+
+tc1:1:aa
+tc1:2:aab
+tc1:3:aabd
+tc2:1:aa
+tc2:2:aab
+tc2:3:aad
+tc3:1:aa
+tc3:2:aab
+tc3:3:aabde
+tc3:4:aad
+tc3:5:aahij
+tc3:6:aaeRANDOMCRAP
+tc3:7:aae
+tc3:8:aaeRANDOM
+tc3:9:aaf
+tc3:10:aahi
+tc3:11:a
+tc3:12:aaaaaa
+tc4:1:aa
+tc4:2:aab
+tc4:3:aabde
+tc4:4:aad
+tc4:5:aahij
+tc4:6:aaeRANDOMCRAP
+tc4:7:aae
+tc4:8:aaeRANDOM
+tc4:9:aaf
+tc4:10:aahi
+tc4:11:aaaaaa
+tc4:12:aa
+tc4:13:Laab
+tc4:14:Laae
+tc4:15:Laa'
+tc4:16:La
+tc4:17:Lab
+tc4:18:Laaaaaaaaa
+tc4:19:Laafe
+tc5:1:cat
+tc5:2:alpha
+tc5:3:beta
+tc5:4:ape
+tc5:5:apple
+tc5:6:delta
+tc5:7:david
+tc5:8:doughnut
+tc5:9:Ldelta
+tc5:10:Ldavid
+tc5:11:Lapple
+tc5:12:Ldavi
+tc5:13:Ldavie
+tc5:14:Ldavid.
+tc5:15:Ldavvvvv
+tc5:16:Lcut
+tc5:17:Lapt
+tc5:18:Lapp
+tc5:19:Lapplication
+tc5:20:Lappl
+tc5:21:LAPP
+tc5:22:Lape
+tc5:23:Lcaaaaaaaaaaaaat
+tc5:24:Lzeta
+tc5:25:Lbzeta
+tc5:26:cart
+tc5:27:Lcart
+tc5:28:Lcarttt
+tc5:29:Lcar
+tc6:1:cat
+tc6:2:alpha
+tc6:3:beta
+tc6:4:ape
+tc6:5:apple
+tc6:6:delta
+tc6:7:david
+tc6:8:doughnut
+tc7.sh:1:#!/bin/sh
+tc7.sh:2:# This file tests the dictComlpetionsN
+tc7.sh:3:gcc -o cov_word words.c dictionary.c dictionary.h -g -Wall -fprofile-arcs -ftest-coverage
+tc7.sh:4:./cov_word cat < tc6
+tc7.sh:5:gcov dictionary.c
+tc7.sh:6:vi +/127 dictionary.c.gcov 
+
+To test the script
+against, mudflap I had a script that uploaded everything to cse and run it
+
