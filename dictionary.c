@@ -124,8 +124,6 @@ distCompletionsN (struct dictEdge* root,char* word,char *store,
   store[i-1] = 0;
   store[i-2] = root->thisChar; 
   // what this does is append root->thisChar to then end of stored string
-  // FIX
-
   if (root->isTerminal == True) {
     if (strlen(word) - 1 == level) {
       if (word[level] == root->thisChar) {
@@ -138,9 +136,7 @@ distCompletionsN (struct dictEdge* root,char* word,char *store,
   }
 
   if (root->isTerminal == True // signifying end of word
-    && (word[level] == root->thisChar || level >= strlen(word)) 
-    && (level >= strlen(word) )) { 
-    
+    && (level >= strlen(word) )) { // making sure there's nothing left to check
     if (strlen(store) == 0) {
       return; // since the string is empty, we don't add it
     }
@@ -151,23 +147,24 @@ distCompletionsN (struct dictEdge* root,char* word,char *store,
   } // just because we added a word doesn't mean we're finished!
 
   if (level < strlen(word) && word[level] == root->thisChar) {
+    // we have a match for the character, but we're not past searching the prefix 
     // case what we're looking for is directly below
-    
     distCompletionsN (root->child,word,store,level+1,head);
   } else if (level >=strlen(word)) {
-    // if we've already 'made it' past checking the word
+    // if we've already 'made it' past checking the prefix 
     // level is 0 indexed, strlen starts at 1 (so to speak)
     // hence the equality
     distCompletionsN (root->child,word,store,level+1,head);
     // since I add child first, it is in ORDER :)
     distCompletionsN (root->sibling,word,store,level,head);
   } else {
-    // go onto the next sibling then
+    // go onto the next sibling then, since we've not checked all of
+    // the prefix so we go and search the next sibling and see if there's
+    // a match
+    // we're still looking up at the current level
+    // since there is no match
     distCompletionsN (root->sibling,word,store,level,head);
   } 
-  /* these three cases
-
-  */
 }
 // just to test out a few algorithms.
 struct wlnode* 
