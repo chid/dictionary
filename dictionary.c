@@ -41,6 +41,7 @@
 */
 
 struct wlnode* wlRev(struct wlnode*);
+/* testing functions */
 void printEdge(struct dictEdge* dnode, long n);
 void printDict(struct dictionary* dict) {
   printEdge(dict->root,0);
@@ -124,6 +125,8 @@ distCompletionsN (struct dictEdge* root,char* word,char *store,
   store[i-1] = 0;
   store[i-2] = root->thisChar; 
   // what this does is append root->thisChar to then end of stored string
+
+  // if the word that we're searching for is in the string...
   if (root->isTerminal == True) {
     if (strlen(word) - 1 == level) {
       if (word[level] == root->thisChar) {
@@ -135,6 +138,8 @@ distCompletionsN (struct dictEdge* root,char* word,char *store,
     }
   }
 
+  // if the index that we're at is past the strlen of the prefix
+  // if we've made it so far, we add everything
   if (root->isTerminal == True // signifying end of word
     && (level >= strlen(word) )) { // making sure there's nothing left to check
     if (strlen(store) == 0) {
@@ -281,22 +286,22 @@ insertWordR (struct dictEdge * node, char* word) {
       int i = 1;
       struct dictEdge* rover = node;
       while (word[i] != 0) {
-         rover->child = dictEdgeNew(word[i]);      
-         ++i;
-         if (word[i] == '\0') {
-           rover->child->isTerminal = True;
-         }
-         rover = rover->child;
-       }
-       if (i == 1) { 
+        rover->child = dictEdgeNew(word[i]);      
+        ++i;
+        if (word[i] == '\0') {
+          rover->child->isTerminal = True;
+        }
+        rover = rover->child;
+      }
+      if (i == 1) { 
        // we didn't enter loop
        // then the node is the final element
-         node->isTerminal = True;
-       } // seems to make sense to put this at the front :) 
+        node->isTerminal = True;
+      } // seems to make sense to put this at the front :) 
        // case for notentering the loop
        // could just use, rover->isTerminal = True it 'should' work
-     }
-     else { 
+    }
+    else { 
       // found == True
       if (rover->child != NULL) {
         if (word[1] == '\0') { 
@@ -311,6 +316,7 @@ insertWordR (struct dictEdge * node, char* word) {
             rover->child = newp;
           }
           insertWordR(rover->child,&word[1]); 
+          // is the other way to do this, word+1 ?
         }
       }
       else {
@@ -342,10 +348,8 @@ dictInsertWords (struct dictionary* dict, struct wlnode* words) {
  */
 bool
 dictLookup (struct dictionary* dict, char* word) {
-  // is there a more efficient way.
-  // by using two loops, this can be implemented
-  // thanks to Ian Craig who showed me :)
-  if (dict == NULL) {
+  // there is a more efficient way.
+  if (dict == NULL || dict->root == NULL) {
     return False; // or should I throw an error?
   }
   return dictLookupN(dict->root,word);
@@ -392,35 +396,6 @@ dictLookupN (struct dictEdge* node,char* word) {
     }
   }
   // if it gets here it means no matches in the siblings
-  return False;
-}
-
-bool
-dictLookupIter (struct dictionary* dict, char* word) {
-  int i = 0; // loop through elements of the word (counts what letter we're on
-  struct dictEdge* node = dict->root;
-  struct dictEdge* rover;
-  while (i != strlen(word)) {
-    for (rover = node;
-      rover != NULL;
-      rover = rover->sibling) {
-      if (word[i] == rover->thisChar) { // if equal
-        if (word[i + 1] == 0) { 
-          if (rover->isTerminal) {
-            return True;
-          }
-        }
-        node = rover->child;
-        break; // break out of loop
-      }
-      // if we've reached the end of the word and we haven't found it then
-      if (rover->sibling == NULL || word[i] < rover->thisChar) {
-        // don't really need the second one but saves time
-        return False;
-      }
-    }
-    ++i; // look up the next letter with parent node
-  }
   return False;
 }
 

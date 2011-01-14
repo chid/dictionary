@@ -189,11 +189,11 @@ printf("testing, completions\n");
   }
   wl = lookupTest;
   wl = wlRev(wl);
-  printf("Test for Lookup\n");
+  fprintf(stderr,"Test for Lookup\n");
   for (cur = wl; NULL != cur; cur = tmp)
   {
     printf("Looking Up %s, %d\n",cur->word,dictLookup(dict,cur->word));
-    printf("Looking Up %s, %d\n",cur->word,dictLookupIter(dict,cur->word));
+//    printf("Looking Up %s, %d\n",cur->word,dictLookupIter(dict,cur->word));
 #ifdef LOOKUP
     // save cur->next into tmp before we free cur.
     printf("Looking Up %s, %d\n",cur->word,dictLookup(dict,cur->word));

@@ -190,3 +190,9 @@ tc7.sh:6:vi +/127 dictionary.c.gcov
 To test the script
 against, mudflap I had a script that uploaded everything to cse and run it
 
+#test.sh
+// used this to test between reference implementation which I copied off school server :)
+make -s
+./word $1 < word_example.txt
+./dict $1 < word_example.txt
+# gdb ./word
