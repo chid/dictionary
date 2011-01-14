@@ -285,6 +285,7 @@ insertWordR (struct dictEdge * node, char* word) {
 
       int i = 1;
       struct dictEdge* rover = node;
+      // add the child onto the new child :)
       while (word[i] != 0) {
         rover->child = dictEdgeNew(word[i]);      
         ++i;
@@ -303,32 +304,25 @@ insertWordR (struct dictEdge * node, char* word) {
     }
     else { 
       // found == True
-      if (rover->child != NULL) {
-        if (word[1] == '\0') { 
-           rover->isTerminal = True; 
+      if (word[1] == '\0') { // we're finished
+        rover->isTerminal = True;
+      }
+      else if (rover->child != NULL) {
+        // inorderFix, create the node and set the pointer
+        if (rover->child->thisChar > word[1]) {
+          // if we need to insert it at the beginning
+          struct dictEdge* newp = dictEdgeNew(word[1]);
+          newp->sibling = rover->child;
+          rover->child = newp;
         }
-        else {
-          // inorderFix, create the node and set the pointer
-          if (rover->child->thisChar > word[1]) {
-            // if we need to insert it at the beginning
-            struct dictEdge* newp = dictEdgeNew(word[1]);
-            newp->sibling = rover->child;
-            rover->child = newp;
-          }
-          insertWordR(rover->child,&word[1]); 
-          // is the other way to do this, word+1 ?
-        }
+        insertWordR(rover->child,&word[1]); 
       }
       else {
-        if (word[1] == '\0') { 
-           rover->isTerminal = True;
-        }
-        else {
-           rover->child = dictEdgeNew(word[1]);
-           insertWordR(rover->child,&word[1]);
-           // this could be done with a forloop
-           // since all we're doing is spawning children
-        }
+        // rover has no childrenm so we add one :)
+        rover->child = dictEdgeNew(word[1]);
+        insertWordR(rover->child,&word[1]);
+        // this could be done with a forloop
+        // since all we're doing is spawning children
       }
     }
   }
